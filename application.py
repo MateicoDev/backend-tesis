@@ -35,6 +35,7 @@ def shutdown_session(response_or_exc):
 def hello():
     return jsonify(message="Pong!"), 200
 
+
 if __name__ == '__main__':
     with application.app_context():
         db.create_all()

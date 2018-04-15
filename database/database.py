@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from utils.settings import DBSettings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, create_session
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 db = SQLAlchemy()
 

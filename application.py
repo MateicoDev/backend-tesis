@@ -8,6 +8,7 @@ API_PREFIX = "/api/v1"
 
 application = create_app()
 
+
 @application.errorhandler(401)
 @application.errorhandler(404)
 @application.errorhandler(403)

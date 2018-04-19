@@ -73,7 +73,8 @@ class ClaimTypeSchema(Schema):
 class ClaimSchema(Schema):
     id = fields.Integer()
     title = fields.String()
-    type = fields.Nested(ClaimTypeSchema())
+    # type = fields.Nested(ClaimTypeSchema())
+    category = fields.Integer()
     content = fields.String()
     date = fields.DateTime()
     status = fields.Integer()

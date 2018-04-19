@@ -27,6 +27,7 @@ def create_app():
     application.config['CORS_SUPPORT_CREDENTIALS'] = True
     application.url_map.strict_slashes = False
     init_engine(application.config['SQLALCHEMY_DATABASE_URI'])
+    global db
     db = SQLAlchemy()
     db.init_app(application)
     return application

@@ -40,4 +40,5 @@ def shutdown_session(response_or_exc):
 if __name__ == '__main__':
     with application.app_context():
         CORS(application)
+        db.create_all()
         application.run(host=os.getenv("APP_HOST", "0.0.0.0"), port=os.getenv("APP_PORT", 5000), debug=True)

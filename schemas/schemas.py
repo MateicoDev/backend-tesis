@@ -77,7 +77,7 @@ class ClaimSchema(Schema):
     category = fields.Integer()
     content = fields.String()
     date = fields.DateTime()
-    status = fields.Integer()
+    status = fields.Boolean()
 
 
 class PaginationSchema(Schema):

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from utils.settings import DBSettings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, create_session
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 db = SQLAlchemy()
 
@@ -27,6 +27,7 @@ def create_app():
     application.config['CORS_SUPPORT_CREDENTIALS'] = True
     application.url_map.strict_slashes = False
     init_engine(application.config['SQLALCHEMY_DATABASE_URI'])
+    global db
     db = SQLAlchemy()
     db.init_app(application)
     return application

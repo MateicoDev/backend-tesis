@@ -1,7 +1,7 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
 from schemas import PageOfClaimsSchema, ClaimTypeSchema, ClaimSchema
-from model import Claim
+from model import Claim, ClaimType, ClaimStatus
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
@@ -45,12 +45,17 @@ class ClaimsView(FlaskView):
         claim_obj.content = data.get('content', None)
         if not claim_obj.content:
             raise BadRequest('Claim content is Mandatory')
-        claim_obj.category = data.get('category', None)
-        if not claim_obj.category:
-            raise BadRequest('Claim category is Mandatory')
-        claim_obj.status = data.get('status', None)
-        if not claim_obj.status:
-            raise BadRequest('Claim status is Mandatory')
+        claim_obj.id_category = data.get('id_category', None)
+        if not claim_obj.id_category:
+            raise BadRequest('Claim id_category is Mandatory')
+
+        type_claim = ClaimStatus.query
+        type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first()
+        claim_obj.id_status = type_claim.id
+        claim_obj.dni_sender = "38332661"
+        claim_obj.type_dni_sender = "DNI"
+        claim_obj.id_property = 1
+        claim_obj.id_partnership = 1
         
         try:
             db.session.add(claim_obj)

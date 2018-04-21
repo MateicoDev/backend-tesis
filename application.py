@@ -3,6 +3,7 @@ from werkzeug.exceptions import *
 from views import *
 from flask_cors import CORS
 from flask import jsonify
+from populators.claim_initializer import ClaimInitializer
 import os
 
 application = create_app()
@@ -41,4 +42,6 @@ if __name__ == '__main__':
     with application.app_context():
         CORS(application)
         db.create_all()
+        ClaimInitializer().init_status_claims()
+        ClaimInitializer().init_type_claims()
         application.run(host=os.getenv("APP_HOST", "0.0.0.0"), port=os.getenv("PORT", 5000))

@@ -1,1 +1,1 @@
-from claim import Claim, ClaimType
+from claim import Claim, ClaimType, ClaimStatus

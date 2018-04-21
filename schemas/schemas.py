@@ -70,14 +70,20 @@ class ClaimTypeSchema(Schema):
     name = fields.String()
 
 
+class ClaimStatusSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+
+
 class ClaimSchema(Schema):
     id = fields.Integer()
     title = fields.String()
-    # type = fields.Nested(ClaimTypeSchema())
-    category = fields.Integer()
+    category = fields.Nested(ClaimTypeSchema())
     content = fields.String()
     date = fields.DateTime()
-    status = fields.Boolean()
+    status = fields.Nested(ClaimStatusSchema())
+    comment = fields.String()
+    date_end_claim = fields.DateTime()
 
 
 class PaginationSchema(Schema):

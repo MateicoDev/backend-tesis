@@ -50,13 +50,13 @@ class ClaimsView(FlaskView):
             raise BadRequest('Claim id_category is Mandatory')
 
         type_claim = ClaimStatus.query
-        type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first()
+        type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first_or_404()
         claim_obj.id_status = type_claim.id
         claim_obj.dni_sender = "38332661"
         claim_obj.type_dni_sender = "DNI"
         claim_obj.id_property = 1
         claim_obj.id_partnership = 1
-        
+
         try:
             db.session.add(claim_obj)
             db.session.commit()

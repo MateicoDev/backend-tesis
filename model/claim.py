@@ -23,9 +23,7 @@ class Claim(db.Model):
     __tablename__ = 'claim'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    dni_sender = db.Column(db.String(12), nullable=False)
-    type_dni_sender = db.Column(db.String(50), nullable=False)
-    content = db.Column(db.String, nullable=False)
+    id_user = db.Column(db.Integer, nullable=False)
     id_category = db.Column(db.Integer, db.ForeignKey('claim_type.id'))
     category = db.relationship('ClaimType', cascade='merge', backref=db.backref('category'))
     id_status = db.Column(db.Integer, db.ForeignKey('claim_status.id'))
@@ -34,17 +32,37 @@ class Claim(db.Model):
     id_property = db.Column(db.Integer, nullable=True)
     id_partnership = db.Column(db.Integer, nullable=True)
     date_end_claim = db.Column(db.DateTime, nullable=True)
-    comment = db.Column(db.String, nullable=True)
+    subject = db.Column(db.String, nullable=False)
+    picture = db.Column(db.String, nullable=True)
 
-    def __init__(self, title=None, content=None, id_category=None, date=None, dni_sender=None,
-                 type_dni_sender=None, id_property=None, id_partnership=None, id_status=None):
+    def __init__(self, title=None, subject=None, id_category=None, date=None, id_user=None
+                 , id_property=None, id_partnership=None, id_status=None, picture=None):
 
         self.title = title
-        self.content = content
+        self.subject = subject
         self.id_category = id_category
         self.date = date
-        self.dni_sender = dni_sender
-        self.type_dni_sender = type_dni_sender
         self.id_property = id_property
         self.id_partnership = id_partnership
+        self.id_user = id_user
         self.id_status = id_status
+        self.picture = picture
+
+
+class ClaimMessages(db.Model):
+    __tablename__ = 'claim_messages'
+    id = db.Column(db.Integer, primary_key=True)
+    id_user = db.Column(db.String(12), nullable=False)
+    id_partnership = db.Column(db.String(50), nullable=False)
+    comment = db.Column(db.String, nullable=True)
+    seen = db.Column(db.Integer, nullable=True)
+    date = db.Column(db.DateTime, nullable=False)
+    id_claim = db.Column(db.Integer, db.ForeignKey('claim.id'))
+    claim = db.relationship('Claim', cascade='merge', backref=db.backref('claim'))
+
+    def __init__(self, id_user=None, id_partnership=None, comment=None, date=None, id_claim=None):
+        self.id_user = id_user
+        self.id_partnership = id_partnership
+        self.comment = comment
+        self.date = date
+        self.id_claim = id_claim

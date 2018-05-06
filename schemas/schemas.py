@@ -79,11 +79,22 @@ class ClaimSchema(Schema):
     id = fields.Integer()
     title = fields.String()
     category = fields.Nested(ClaimTypeSchema())
-    content = fields.String()
     date = fields.DateTime()
     status = fields.Nested(ClaimStatusSchema())
-    comment = fields.String()
+    subject = fields.String()
     date_end_claim = fields.DateTime()
+    id_user = fields.Integer()
+    id_partnership = fields.Integer()
+    picture = fields.String()
+
+
+class ClaimMessagesSchema(Schema):
+    id = fields.Integer()
+    id_user = fields.Integer()
+    id_partnership = fields.Integer()
+    comment = fields.String()
+    date = fields.DateTime()
+    claim = fields.Nested(ClaimSchema())
 
 
 class PaginationSchema(Schema):
@@ -98,5 +109,12 @@ class PaginationSchema(Schema):
 
 class PageOfClaimsSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimSchema()))
+
+
+class PageOfClaimsMessagesSchema(PaginationSchema):
+    items = fields.List(fields.Nested(ClaimMessagesSchema()))
+
+
+
 
 

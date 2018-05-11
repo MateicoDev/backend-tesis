@@ -14,3 +14,5 @@ class DBSettings:
     DB_PASSWORD = os.getenv("DB_PASSWORD", "26a798f2f87dfcc9a3c84de6f1e908b6e5eaf7b34bf25b98de093029cda1149b")
     SQLALCHEMY_DATABASE_URI = "{0}://{1}:{2}@{3}:{4}/{5}".format(DB_ENGINE, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT,
                                                                  DB_NAME)
+
+    FIREBASE_API_KEY = os.getenv("FIREBASE_API_KEY", "")

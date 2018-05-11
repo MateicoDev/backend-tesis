@@ -134,9 +134,14 @@ class ClaimsView(FlaskView):
         per_page = params.get('per_page', 10)
         category = params.get('category', None)
 
+        id_claim = params.get('id', None)
+        if not id_claim:
+            raise BadRequest('Claim id is Mandatory')
+
         claims_messages_data = ClaimMessages.query
         if category is None:
-            claims_messages = claims_messages_data.order_by(ClaimMessages.date.desc()).paginate(int(page), int(per_page)
+            claims_messages = claims_messages_data.filter(ClaimMessages.id_claim == id_claim)
+            claims_messages = claims_messages.order_by(ClaimMessages.date.desc()).paginate(int(page), int(per_page)
                                                                                                 , error_out=False)
         else:
             claims_messages_data = claims_messages_data.filter(Claim.category == category)
@@ -154,8 +159,6 @@ class ClaimsView(FlaskView):
         claim_types.name = data.get('name', None)
         if not claim_types.name:
             raise BadRequest('Name for Type of claim is Mandatory')
-
-
 
         try:
             db.session.add(claim_types)

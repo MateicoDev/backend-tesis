@@ -1,9 +1,10 @@
-from database import db,create_app
+from database import create_app, db
 from werkzeug.exceptions import *
 from views import *
 from flask_cors import CORS
 from flask import jsonify
 from populators.claim_initializer import ClaimInitializer
+from populators.users_initializer import UsersInitializer
 import os
 
 application = create_app()
@@ -44,4 +45,5 @@ if __name__ == '__main__':
         db.create_all()
         ClaimInitializer().init_status_claims()
         ClaimInitializer().init_type_claims()
+        UsersInitializer().init_users()
         application.run(host=os.getenv("APP_HOST", "0.0.0.0"), port=os.getenv("PORT", 5000))

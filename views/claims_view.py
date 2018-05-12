@@ -5,9 +5,11 @@ from model import Claim, ClaimType, ClaimStatus, ClaimMessages
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
-from utils.notifications_utils import send_notification
+from notifications_view import send_notification
 from utils.constants import ID_NOTIFICATION_TYPE_CLAIM, NOTIFICATION_TITLE_CLAIM, \
-    NOTIFICATION_BODY_CLAIM, CLAIM
+    NOTIFICATION_BODY_CLAIM, CLAIM, NOTIFICATION_TITLE_CLAIM_MESSAGE, NOTIFICATION_BODY_CLAIM_MESSAGE, \
+                          ID_NOTIFICATION_TYPE_CLAIM_MESSAGE, CLAIM_MESSAGE
+
 
 
 class ClaimsView(FlaskView):
@@ -41,8 +43,8 @@ class ClaimsView(FlaskView):
         return jsonify({'claims': claims_data})
 
     def post(self):
-        owner = authenticator.basic_auth(request.authorization, "CreateCLAIM")
-        valid_users = []
+        # owner = authenticator.basic_auth(request.authorization, "CreateCLAIM")
+        # valid_users = []
         data = request.json
         claim_obj = Claim()
         claim_obj.date = datetime.now()
@@ -73,9 +75,8 @@ class ClaimsView(FlaskView):
         type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first_or_404()
         claim_obj.id_status = type_claim.id
 
-        send_notification(valid_users, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
-                          .format(owner.user_name), ID_NOTIFICATION_TYPE_CLAIM,
-                          owner.user_profile_pic, notification_type=CLAIM)
+        send_notification(claim_obj.id_user, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
+                          .format("user_name"), ID_NOTIFICATION_TYPE_CLAIM, notification_type=CLAIM)
 
         try:
             db.session.add(claim_obj)
@@ -123,9 +124,9 @@ class ClaimsView(FlaskView):
         if not claim_id.id_user == claim_message.id_user:
             raise BadRequest('Id user not its the same in the claim')
 
-        send_notification(valid_users, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
-                          .format(owner.user_name), ID_NOTIFICATION_TYPE_CLAIM,
-                          owner.user_profile_pic, notification_type=CLAIM)
+        # send_notification(valid_users, NOTIFICATION_TITLE_CLAIM_MESSAGE, NOTIFICATION_BODY_CLAIM_MESSAGE
+        #                   .format(owner.user_name), ID_NOTIFICATION_TYPE_CLAIM_MESSAGE,
+        #                   owner.user_profile_pic, notification_type=CLAIM_MESSAGE)
 
         try:
             db.session.add(claim_message)

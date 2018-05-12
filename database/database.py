@@ -1,12 +1,11 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from utils.settings import DBSettings
+from utils import DBSettings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, create_session
 from flask_cors import CORS
 
 db = SQLAlchemy()
-database_uri_key = 'SQLALCHEMY_DATABASE_URI'
 
 
 def get_scoped_session(uri):

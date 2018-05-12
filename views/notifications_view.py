@@ -1,5 +1,5 @@
 from pyfcm import FCMNotification
-from utils.settings import DBSettings
+from utils.constants import FIREBASE_API_KEY
 from model import Device, Notification
 from database import db
 from utils.constants import ID_NOTIFICATION_TYPE_OTHERS
@@ -9,7 +9,7 @@ import datetime
 def send_notification(users, notification_title="Desconocido", notification_body="Desconocido",
                       id_notification_type=ID_NOTIFICATION_TYPE_OTHERS,
                       notification_picture="Desconocido", read=False, visible=True, notification_type=None):
-    push_notification_service = FCMNotification(api_key=DBSettings.FIREBASE_API_KEY)
+    push_notification_service = FCMNotification(api_key=FIREBASE_API_KEY)
     notifications = []
     for id_user in users:
         notification = Notification(notification_title=notification_title, notification_body=notification_body,

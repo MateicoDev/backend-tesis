@@ -18,7 +18,7 @@ class User(db.Model):
     user_dni = db.Column(db.String(12), nullable=True)
     user_phone = db.Column(db.String(30), nullable=True)
 
-    def __init__(self, user_username=None, user_password="dinocloud123$", user_name="Rodrigo",
+    def __init__(self, user_username=None, user_password=None, user_name=None,
                  user_lastname=None, user_email=None,
                  user_profile_pic=None, user_birth_date=None,
                  user_sex=None, user_dni=None, user_phone=None):

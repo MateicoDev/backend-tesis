@@ -11,9 +11,7 @@ class UserReducedSchema(Schema):
     user_username = fields.String()
     user_name = fields.String()
     user_lastname = fields.String()
-    user_profile_pic = fields.String()
     active = fields.Boolean()
-    user_sex = fields.String()
 
 
 class UserRoleSchema(Schema):
@@ -77,14 +75,16 @@ class ClaimStatusSchema(Schema):
 
 class ClaimSchema(Schema):
     id = fields.Integer()
-    title = fields.String()
     category = fields.Nested(ClaimTypeSchema())
+    title = fields.String()
+    subject = fields.String()
+    user_sender = fields.Nested(UserReducedSchema())
+    user_reciver = fields.Nested(UserReducedSchema())
+    id_property = fields.Integer()
+    id_partnership = fields.Integer()
     date = fields.DateTime()
     status = fields.Nested(ClaimStatusSchema())
-    subject = fields.String()
     date_end_claim = fields.DateTime()
-    id_user = fields.Integer()
-    id_partnership = fields.Integer()
     picture = fields.String()
 
 
@@ -113,6 +113,11 @@ class PageOfClaimsSchema(PaginationSchema):
 
 class PageOfClaimsMessagesSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimMessagesSchema()))
+
+
+class PageOfUsersSchema(PaginationSchema):
+    items = fields.List(fields.Nested(UserReducedSchema()))
+
 
 
 

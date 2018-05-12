@@ -27,6 +27,7 @@ def handle_error(e):
 
 api_prefix = "/api/v1"
 ClaimsView.register(application, route_prefix=api_prefix)
+UsersView.register(application, route_prefix=api_prefix)
 
 
 @application.teardown_appcontext

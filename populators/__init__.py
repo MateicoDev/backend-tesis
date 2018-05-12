@@ -1,1 +1,2 @@
 from claim_initializer import ClaimInitializer
+from users_initializer import UsersInitializer

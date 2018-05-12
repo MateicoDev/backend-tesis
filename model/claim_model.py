@@ -23,7 +23,10 @@ class Claim(db.Model):
     __tablename__ = 'claim'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    id_user = db.Column(db.Integer, nullable=False)
+    id_user_sender = db.Column(db.Integer, db.ForeignKey('users.id_user'))
+    user_sender = db.relationship('User', foreign_keys=[id_user_sender], cascade='merge')
+    id_user_reciver = db.Column(db.Integer, db.ForeignKey('users.id_user'))
+    user_reciver = db.relationship('User', foreign_keys=[id_user_reciver], cascade="merge")
     id_category = db.Column(db.Integer, db.ForeignKey('claim_type.id'))
     category = db.relationship('ClaimType', cascade='merge', backref=db.backref('category'))
     id_status = db.Column(db.Integer, db.ForeignKey('claim_status.id'))
@@ -52,13 +55,17 @@ class Claim(db.Model):
 class ClaimMessages(db.Model):
     __tablename__ = 'claim_messages'
     id = db.Column(db.Integer, primary_key=True)
-    id_user = db.Column(db.String(12), nullable=False)
+    id_user_sender = db.Column(db.Integer, db.ForeignKey('users.id_user'))
+    user_sender = db.relationship('User', foreign_keys=[id_user_sender], cascade='merge')
+    id_user_reciver = db.Column(db.Integer, db.ForeignKey('users.id_user'))
+    user_reciver = db.relationship('User', foreign_keys=[id_user_reciver], cascade="merge")
+    id_category = db.Column(db.Integer, db.ForeignKey('claim_type.id'))
     id_partnership = db.Column(db.String(50), nullable=False)
     comment = db.Column(db.String, nullable=True)
     seen = db.Column(db.Integer, nullable=True)
     date = db.Column(db.DateTime, nullable=False)
     id_claim = db.Column(db.Integer, db.ForeignKey('claim.id'))
-    claim = db.relationship('Claim', cascade='merge', backref=db.backref('claim'))
+    claim = db.relationship('Claim', foreign_keys=[id_claim], cascade="merge")
 
     def __init__(self, id_user=None, id_partnership=None, comment=None, date=None, id_claim=None):
         self.id_user = id_user

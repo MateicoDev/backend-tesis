@@ -11,7 +11,6 @@ from utils.constants import ID_NOTIFICATION_TYPE_CLAIM, NOTIFICATION_TITLE_CLAIM
                           ID_NOTIFICATION_TYPE_CLAIM_MESSAGE, CLAIM_MESSAGE
 
 
-
 class ClaimsView(FlaskView):
     route_base = '/claims/'
     claims_schema = PageOfClaimsSchema()
@@ -47,16 +46,27 @@ class ClaimsView(FlaskView):
         # valid_users = []
         data = request.json
         claim_obj = Claim()
+
         claim_obj.date = datetime.now()
+
+        user_reciver = data.get('user_reciver', None)
+        if not user_reciver:
+            raise BadRequest('User reciver is Mandatory')
+        claim_obj.id_user_sender = user_reciver.get('id_user', None)
+        if not claim_obj.id_user_sender:
+            raise BadRequest('Id of sender is Mandatory')
+        user_sender = data.get('user_sender', None)
+        if not user_sender:
+            raise BadRequest('User sender is Mandatory')
+        claim_obj.id_user_reciver = user_sender.get('id_user', None)
+        if not claim_obj.id_user_reciver:
+            raise BadRequest('Id of reciver is Mandatory')
         claim_obj.title = data.get('title', None)
         if not claim_obj.title:
             raise BadRequest('Claim title is Mandatory')
         claim_obj.subject = data.get('subject', None)
         if not claim_obj.subject:
             raise BadRequest('Claim subject is Mandatory')
-        claim_obj.id_user = data.get('id_user', None)
-        if not claim_obj.id_user:
-            raise BadRequest('Id user is Mandatory')
         claim_obj.id_property = data.get('id_property', None)
         if not claim_obj.id_property:
             raise BadRequest('Id property is Mandatory')
@@ -75,8 +85,8 @@ class ClaimsView(FlaskView):
         type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first_or_404()
         claim_obj.id_status = type_claim.id
 
-        send_notification(claim_obj.id_user, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
-                          .format("user_name"), ID_NOTIFICATION_TYPE_CLAIM, notification_type=CLAIM)
+        # send_notification(claim_obj.id_user, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
+        #                   .format("user_name"), ID_NOTIFICATION_TYPE_CLAIM, notification_type=CLAIM)
 
         try:
             db.session.add(claim_obj)
@@ -155,12 +165,12 @@ class ClaimsView(FlaskView):
         claims_messages_data = ClaimMessages.query
         if category is None:
             claims_messages = claims_messages_data.filter(ClaimMessages.id_claim == id_claim)
-            claims_messages = claims_messages.order_by(ClaimMessages.date.desc()).paginate(int(page), int(per_page)
-                                                                                                , error_out=False)
+            claims_messages = claims_messages.order_by(ClaimMessages.date.asc()).paginate(int(page), int(per_page),
+                                                                                          error_out=False)
         else:
             claims_messages_data = claims_messages_data.filter(Claim.category == category)
-            claims_messages = claims_messages_data.order_by(Claim.date.desc()).paginate(int(page), int(per_page)
-                                                                                        , error_out=False)
+            claims_messages = claims_messages_data.order_by(Claim.date.asc()).paginate(int(page), int(per_page),
+                                                                                       error_out=False)
 
         claims_messages_data = self.claims_messages_schema.dump(claims_messages).data
 

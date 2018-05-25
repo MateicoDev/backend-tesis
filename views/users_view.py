@@ -25,7 +25,7 @@ class UsersView(FlaskView):
             users = self.users_schema.dump(users_data).data
         else:
             user_data = user_data.filter(User.id == id_user).first()
-            users = self.users_schema.dump(user_data).data
+            users = self.user_schema.dump(user_data).data
             string = "user"
 
         return jsonify({string: users})

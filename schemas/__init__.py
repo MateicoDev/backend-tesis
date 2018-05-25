@@ -6,3 +6,4 @@ from schemas import ClaimMessagesSchema
 from schemas import UserReducedSchema
 from schemas import PageOfUsersSchema
 from schemas import PageofPartnershipSchema
+from schemas import PartnershipSchema

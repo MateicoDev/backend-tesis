@@ -1,6 +1,6 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
-from schemas import PageofPartnershipSchema
+from schemas import PageofPartnershipSchema, PartnershipSchema
 from model import Partnership
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
@@ -9,7 +9,8 @@ from datetime import datetime
 
 class PartnershipView(FlaskView):
     route_base = '/property/'
-    partnership_schema = PageofPartnershipSchema()
+    partnerships_schema = PageofPartnershipSchema()
+    partnership_schema = PartnershipSchema()
 
     def get(self):
         params = request.args
@@ -22,10 +23,10 @@ class PartnershipView(FlaskView):
         if not id_partnership:
             partnerships_data = partnership_data.order_by(Partnership.name.asc()).paginate(int(page), int(per_page),
                                                                                            error_out=False)
-            partnership = self.partnership_schema.dump(partnerships_data).data
+            partnership = self.partnerships_schema.dump(partnerships_data).data
         else:
             partnerships_data = partnership_data.filter(Partnership.id == id_partnership).first()
-            partnership = self.users_schema.dump(partnerships_data).data
+            partnership = self.partnerships_schema.dump(partnerships_data).data
             string = "partnership"
 
         return jsonify({string: partnership})
@@ -60,6 +61,6 @@ class PartnershipView(FlaskView):
             raise InternalServerError('Unable to store new partnership for user ')
 
         partnership = Partnership.query.order_by(Partnership.date_created.desc()).first()
-        partnership_data = self.claim_schema.dump(partnership).data
+        partnership_data = self.partnership_schema.dump(partnership).data
 
         return jsonify({'partnership': partnership_data})

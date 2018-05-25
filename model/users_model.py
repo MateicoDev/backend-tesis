@@ -4,33 +4,33 @@ import datetime
 
 class User(db.Model):
     __tablename__ = 'users'
-    id_user = db.Column(db.Integer, primary_key=True)
-    user_username = db.Column(db.String(60), nullable=False)
-    user_password = db.Column(db.String(150), nullable=False)
-    user_name = db.Column(db.String(45), nullable=False)
-    user_lastname = db.Column(db.String(45), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(60), nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(45), nullable=False)
+    lastname = db.Column(db.String(45), nullable=False)
     active = db.Column(db.Boolean, nullable=False, default=True)
-    user_email = db.Column(db.String(100), nullable=False)
-    user_profile_pic = db.Column(db.String(300), nullable=True)
-    user_hired_date = db.Column(db.DateTime, nullable=False)
-    user_birth_date = db.Column(db.DateTime, nullable=False)
-    user_sex = db.Column(db.String(1), nullable=True)
-    user_dni = db.Column(db.String(12), nullable=True)
-    user_phone = db.Column(db.String(30), nullable=True)
+    email = db.Column(db.String(100), nullable=False)
+    profile_pic = db.Column(db.String(300), nullable=True)
+    hired_date = db.Column(db.DateTime, nullable=False)
+    birth_date = db.Column(db.DateTime, nullable=False)
+    sex = db.Column(db.String(1), nullable=True)
+    dni = db.Column(db.String(12), nullable=True)
+    phone = db.Column(db.String(30), nullable=True)
 
-    def __init__(self, user_username=None, user_password=None, user_name=None,
-                 user_lastname=None, user_email=None,
-                 user_profile_pic=None, user_birth_date=None,
-                 user_sex=None, user_dni=None, user_phone=None):
-        self.user_hired_date = datetime.datetime.now().date()
-        self.user_username = user_username
-        self.user_password = user_password
-        self.user_name = user_name
-        self.user_lastname = user_lastname
+    def __init__(self, username=None, password=None, name=None,
+                 lastname=None, email=None,
+                 profile_pic=None, birth_date=None,
+                 sex=None, dni=None, phone=None):
+        self.hired_date = datetime.datetime.now().date()
+        self.username = username
+        self.password = password
+        self.name = name
+        self.lastname = lastname
         self.active = True
-        self.user_email = user_email
-        self.user_profile_pic = user_profile_pic
-        self.user_birth_date = user_birth_date
-        self.user_sex = user_sex
-        self.user_dni = user_dni
-        self.user_phone = user_phone
+        self.email = email
+        self.profile_pic = profile_pic
+        self.birth_date = birth_date
+        self.sex = sex
+        self.dni = dni
+        self.phone = phone

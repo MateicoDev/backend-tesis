@@ -97,6 +97,14 @@ class ClaimMessagesSchema(Schema):
     claim = fields.Nested(ClaimSchema())
 
 
+class PartnershipSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+    address = fields.String()
+    id_neighborhood = fields.Integer()
+    admin = fields.Nested(UserReducedSchema())
+
+
 class PaginationSchema(Schema):
     has_next = fields.Boolean()
     has_prev = fields.Boolean()
@@ -119,6 +127,8 @@ class PageOfUsersSchema(PaginationSchema):
     items = fields.List(fields.Nested(UserReducedSchema()))
 
 
+class PageofPartnershipSchema(PaginationSchema):
+    items = fields.List(fields.Nested(PartnershipSchema()))
 
 
 

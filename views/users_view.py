@@ -21,10 +21,10 @@ class UsersView(FlaskView):
 
         user_data = User.query
         if not id_user:
-            users_data = user_data.order_by(User.user_name.asc()).paginate(int(page), int(per_page), error_out=False)
+            users_data = user_data.order_by(User.name.asc()).paginate(int(page), int(per_page), error_out=False)
             users = self.users_schema.dump(users_data).data
         else:
-            user_data = user_data.filter(User.id_user == id_user).first()
+            user_data = user_data.filter(User.id == id_user).first()
             users = self.users_schema.dump(user_data).data
             string = "user"
 

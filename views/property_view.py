@@ -26,7 +26,7 @@ class PartnershipView(FlaskView):
             partnership = self.partnerships_schema.dump(partnerships_data).data
         else:
             partnerships_data = partnership_data.filter(Partnership.id == id_partnership).first()
-            partnership = self.partnerships_schema.dump(partnerships_data).data
+            partnership = self.partnership_schema.dump(partnerships_data).data
             string = "partnership"
 
         return jsonify({string: partnership})

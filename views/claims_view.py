@@ -1,14 +1,15 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
 from schemas import PageOfClaimsSchema, ClaimTypeSchema, ClaimSchema, ClaimMessagesSchema, PageOfClaimsMessagesSchema
-from model import Claim, ClaimType, ClaimStatus, ClaimMessages
+from model import Claim, ClaimType, ClaimStatus, ClaimMessages, Device
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
+from pyfcm import FCMNotification
 from notifications_view import send_notification
 from utils.constants import ID_NOTIFICATION_TYPE_CLAIM, NOTIFICATION_TITLE_CLAIM, \
     NOTIFICATION_BODY_CLAIM, CLAIM, NOTIFICATION_TITLE_CLAIM_MESSAGE, NOTIFICATION_BODY_CLAIM_MESSAGE, \
-                          ID_NOTIFICATION_TYPE_CLAIM_MESSAGE, CLAIM_MESSAGE
+                          ID_NOTIFICATION_TYPE_CLAIM_MESSAGE, CLAIM_MESSAGE, FIREBASE_API_KEY
 
 
 class ClaimsView(FlaskView):
@@ -74,6 +75,8 @@ class ClaimsView(FlaskView):
         if not claim_obj.id_property:
             raise BadRequest('Id partnership is Mandatory')
 
+        claim_obj.picture = data.get('picture', None)
+
         category = data.get('category', None)
         if not category:
             raise BadRequest('Claim category is Mandatory')
@@ -84,9 +87,6 @@ class ClaimsView(FlaskView):
         type_claim = ClaimStatus.query
         type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first_or_404()
         claim_obj.id_status = type_claim.id
-
-        # send_notification(claim_obj.id_user, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
-        #                   .format("user_name"), ID_NOTIFICATION_TYPE_CLAIM, notification_type=CLAIM)
 
         try:
             db.session.add(claim_obj)
@@ -99,7 +99,21 @@ class ClaimsView(FlaskView):
         claim = Claim.query.order_by(Claim.date.desc()).first()
         claim_data = self.claim_schema.dump(claim).data
 
-        return jsonify({'claim': claim_data})
+        # tokens = Device.query.filter(Device.user_id == claim_obj.id_user_reciver).all()
+        # for token in tokens:
+        # send_notification(claim_obj.id_user, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
+        #                   .format("user_name"), ID_NOTIFICATION_TYPE_CLAIM, notification_type=CLAIM)
+
+        # push_notification_service = FCMNotification(api_key=FIREBASE_API_KEY)
+        # push_service = FCMNotification(api_key=FIREBASE_API_KEY)
+        push_service = FCMNotification(api_key="AIzaSyCJOgFbYcp93-gJxN9iImQEVyZv1bPs1Fo")
+        registration_id = "526311102332-tsfvcmbnmmn4vtre45rvtoq3pgddnnaj.apps.googleusercontent.com"
+        message_title = NOTIFICATION_TITLE_CLAIM
+        message_body = NOTIFICATION_BODY_CLAIM
+        result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title,
+                                                   message_body=message_body)
+
+        return jsonify({'claim': claim_data}, {"resultado": result})
 
     @route('/messages', methods=['POST'])
     def post_messages(self):

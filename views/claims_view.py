@@ -1,15 +1,10 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
 from schemas import PageOfClaimsSchema, ClaimTypeSchema, ClaimSchema, ClaimMessagesSchema, PageOfClaimsMessagesSchema
-from model import Claim, ClaimType, ClaimStatus, ClaimMessages, Device
+from model import Claim, ClaimType, ClaimStatus, ClaimMessages
 from database import db
-from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
+from werkzeug.exceptions import InternalServerError, BadRequest
 from datetime import datetime
-from pyfcm import FCMNotification
-from notifications_view import send_notification
-from utils.constants import ID_NOTIFICATION_TYPE_CLAIM, NOTIFICATION_TITLE_CLAIM, \
-    NOTIFICATION_BODY_CLAIM, CLAIM, NOTIFICATION_TITLE_CLAIM_MESSAGE, NOTIFICATION_BODY_CLAIM_MESSAGE, \
-                          ID_NOTIFICATION_TYPE_CLAIM_MESSAGE, CLAIM_MESSAGE, FIREBASE_API_KEY
 
 
 class ClaimsView(FlaskView):
@@ -25,14 +20,17 @@ class ClaimsView(FlaskView):
         params = request.args
         page = params.get('page', 1)
         per_page = params.get('per_page', 10)
-        category = params.get('category', None)
-        status = params.get('status', None)
-        id_user = params.get('id_user', None)
+        id_user_reciver = params.get('id_user_reciver', None)
+        id_user_sender = params.get('id_user_sender', None)
 
         claims_data = Claim.query
-        if id_user is not None:
+        if id_user_reciver is not None:
             claims_data = claims_data
-            claims = claims_data.filter(Claim.id_user_reciver == id_user)
+            claims = claims_data.filter(Claim.id_user_reciver == id_user_reciver)
+            claims = claims.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
+        elif id_user_sender is not None:
+            claims_data = claims_data
+            claims = claims_data.filter(Claim.id_user_sender == id_user_sender)
             claims = claims.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
         else:
             claims = claims_data.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)

@@ -29,7 +29,7 @@ api_prefix = "/api/v1"
 ClaimsView.register(application, route_prefix=api_prefix)
 UsersView.register(application, route_prefix=api_prefix)
 PartnershipView.register(application, route_prefix=api_prefix)
-
+LoginView.register(application, route_prefix=api_prefix)
 
 @application.teardown_appcontext
 def shutdown_session(response_or_exc):

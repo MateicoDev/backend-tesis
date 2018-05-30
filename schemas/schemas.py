@@ -12,6 +12,7 @@ class UserReducedSchema(Schema):
     name = fields.String()
     lastname = fields.String()
     active = fields.Boolean()
+    email = fields.String()
 
 
 class UserRoleSchema(Schema):

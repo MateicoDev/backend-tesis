@@ -7,10 +7,10 @@ class UserPermissionSchema(Schema):
 
 
 class UserReducedSchema(Schema):
-    id_user = fields.Integer()
-    user_username = fields.String()
-    user_name = fields.String()
-    user_lastname = fields.String()
+    id = fields.Integer()
+    username = fields.String()
+    name = fields.String()
+    lastname = fields.String()
     active = fields.Boolean()
 
 

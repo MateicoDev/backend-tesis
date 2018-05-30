@@ -27,16 +27,14 @@ class ClaimsView(FlaskView):
         per_page = params.get('per_page', 10)
         category = params.get('category', None)
         status = params.get('status', None)
+        id_user = params.get('id_user', None)
 
         claims_data = Claim.query
-        if category is None and status is None:
+        if id_user is not None:
             claims_data = claims_data
-            claims = claims_data.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
-        elif category is None:
-            claims_data = claims_data.filter(not Claim.status)
-            claims = claims_data.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
+            claims = claims_data.filter(Claim.id_user_reciver == id_user)
+            claims = claims.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
         else:
-            claims_data = claims_data.filter(Claim.status, Claim.category == category)
             claims = claims_data.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
         claims_data = self.claims_schema.dump(claims).data
 
@@ -53,15 +51,15 @@ class ClaimsView(FlaskView):
         user_reciver = data.get('user_reciver', None)
         if not user_reciver:
             raise BadRequest('User reciver is Mandatory')
-        claim_obj.id_user_sender = user_reciver.get('id_user', None)
-        if not claim_obj.id_user_sender:
-            raise BadRequest('Id of sender is Mandatory')
+        claim_obj.id_user_reciver = user_reciver.get('id_user', None)
+        if not claim_obj.id_user_reciver:
+            raise BadRequest('Id of reciver is Mandatory')
         user_sender = data.get('user_sender', None)
         if not user_sender:
             raise BadRequest('User sender is Mandatory')
-        claim_obj.id_user_reciver = user_sender.get('id_user', None)
-        if not claim_obj.id_user_reciver:
-            raise BadRequest('Id of reciver is Mandatory')
+        claim_obj.id_user_sender = user_sender.get('id_user', None)
+        if not claim_obj.id_user_sender:
+            raise BadRequest('Id of sender is Mandatory')
         claim_obj.title = data.get('title', None)
         if not claim_obj.title:
             raise BadRequest('Claim title is Mandatory')
@@ -99,21 +97,7 @@ class ClaimsView(FlaskView):
         claim = Claim.query.order_by(Claim.date.desc()).first()
         claim_data = self.claim_schema.dump(claim).data
 
-        # tokens = Device.query.filter(Device.user_id == claim_obj.id_user_reciver).all()
-        # for token in tokens:
-        # send_notification(claim_obj.id_user, NOTIFICATION_TITLE_CLAIM, NOTIFICATION_BODY_CLAIM
-        #                   .format("user_name"), ID_NOTIFICATION_TYPE_CLAIM, notification_type=CLAIM)
-
-        # push_notification_service = FCMNotification(api_key=FIREBASE_API_KEY)
-        # push_service = FCMNotification(api_key=FIREBASE_API_KEY)
-        push_service = FCMNotification(api_key="AIzaSyCJOgFbYcp93-gJxN9iImQEVyZv1bPs1Fo")
-        registration_id = "526311102332-tsfvcmbnmmn4vtre45rvtoq3pgddnnaj.apps.googleusercontent.com"
-        message_title = NOTIFICATION_TITLE_CLAIM
-        message_body = NOTIFICATION_BODY_CLAIM
-        result = push_service.notify_single_device(registration_id=registration_id, message_title=message_title,
-                                                   message_body=message_body)
-
-        return jsonify({'claim': claim_data}, {"resultado": result})
+        return jsonify({'claim': claim_data})
 
     @route('/messages', methods=['POST'])
     def post_messages(self):

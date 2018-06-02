@@ -1,5 +1,6 @@
 import os
-import flaskr
+# import flaskr
+# from application import application
 import unittest
 import tempfile
 
@@ -11,10 +12,13 @@ class FlaskrTestCase(unittest.TestCase):
         self.app = flaskr.app.test_client()
         with flaskr.app.app_context():
             flaskr.init_db()
+        # pass
 
     def tearDown(self):
         os.close(self.db_fd)
         os.unlink(flaskr.app.config['DATABASE'])
+        # pass
+
 
 if __name__ == '__main__':
     unittest.main()

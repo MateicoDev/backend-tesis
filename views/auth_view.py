@@ -14,12 +14,15 @@ class LoginView(FlaskView):
     def post(self):
         data = request.json
         user_email = data.get('user_email', None)
+        if not user_email:
+            raise BadRequest('Email is mandatory')
 
-        user_data = User.query
-        if user_email:
-            user = user_data.filter(User.email == user_email).first_or_404()
-        else:
-            raise Forbidden('User email its mandatory')
+        password = data.get('user_password', None)
+        user = User.query.filter(User.email == user_email).first_or_404()
+        if user is None:
+            raise Forbidden('User not found')
+        elif user.password != password:
+            raise Forbidden('Password incorrect')
 
         user_data = self.user_schema.dump(user, many=False).data
 

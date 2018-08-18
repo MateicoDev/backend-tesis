@@ -1,10 +1,12 @@
-from flask_classy import FlaskView
+from flask_classy import FlaskView, route
 from flask import jsonify, request
 from schemas import UserReducedSchema
 from model import User
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
+from google.oauth2 import id_token
+from google.auth.transport import requests
 
 
 class LoginView(FlaskView):
@@ -27,3 +29,16 @@ class LoginView(FlaskView):
         user_data = self.user_schema.dump(user, many=False).data
 
         return jsonify({'user': user_data})
+
+    @route('/social', methods=['POST'])
+    def post(self):
+        try:
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                raise ValueError('Wrong issuer.')
+            userid = idinfo['sub']
+        except ValueError:
+            raise Forbidden('User not found')
+
+
+

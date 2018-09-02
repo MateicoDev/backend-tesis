@@ -105,6 +105,11 @@ class PartnershipSchema(Schema):
     id_neighborhood = fields.Integer()
     admin = fields.Nested(UserReducedSchema())
 
+class NeighborhoodSchema(Schema):
+    id_neighborhood = fields.Integer()
+    name = fields.String()
+    city = fields.String()
+
 
 class PaginationSchema(Schema):
     has_next = fields.Boolean()
@@ -128,8 +133,11 @@ class PageOfUsersSchema(PaginationSchema):
     items = fields.List(fields.Nested(UserReducedSchema()))
 
 
-class PageofPartnershipSchema(PaginationSchema):
+class PageOfPartnershipSchema(PaginationSchema):
     items = fields.List(fields.Nested(PartnershipSchema()))
+
+class PageOfNeighborhoodSchema(PaginationSchema):
+    items = fields.List(fields.Nested(NeighborhoodSchema()))
 
 
 

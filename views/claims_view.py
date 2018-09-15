@@ -201,3 +201,29 @@ class ClaimsView(FlaskView):
         types_of_claims = self.claims_type_schema.dump(claims_types, many=True).data
 
         return jsonify({'claim_types': types_of_claims})
+
+    @route('/types', methods=['PUT'])
+    def put_type(self):
+        data = request.json
+        claim_types = ClaimType()
+        claim_types.id = data.get('id', None)
+        claim_types.name = data.get('name', None)
+        if not claim_types.id:
+            raise BadRequest('Did not send claim id to modify')
+
+        try:
+            claim_type_query = ClaimType.query.get(claim_types.id)
+            claim_type_query.name = claim_types.name
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unavailable modify type of claim')
+
+        claim_types = ClaimType.query.get(claim_types.id)
+        types_of_claims = self.claims_type_schema.dump(claim_types).data
+
+        return jsonify({'claim_types': types_of_claims})
+
+

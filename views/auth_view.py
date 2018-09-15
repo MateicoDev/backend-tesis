@@ -10,7 +10,7 @@ from google.auth.transport import requests
 
 
 class LoginView(FlaskView):
-    route_base = '/login/'
+    route_base = '/login'
     user_schema = UserReducedSchema()
 
     def post(self):
@@ -29,16 +29,16 @@ class LoginView(FlaskView):
         user_data = self.user_schema.dump(user, many=False).data
 
         return jsonify({'user': user_data})
-
-    @route('/social', methods=['POST'])
-    def post(self):
-        try:
-            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
-            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-                raise ValueError('Wrong issuer.')
-            userid = idinfo['sub']
-        except ValueError:
-            raise Forbidden('User not found')
+     
+    # @route('/social', methods=['POST'])
+    # def post(self):
+    #     try:
+    #         idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+    #         if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+    #             raise ValueError('Wrong issuer.')
+    #         userid = idinfo['sub']
+    #     except ValueError:
+    #         raise Forbidden('User not found')
 
 
 

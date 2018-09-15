@@ -23,7 +23,7 @@ class UsersInitializer():
                              lastname="Diaz", email="juan.diaz.cruz11@gmail.com",
                              profile_pic="FOTO", birth_date=hired_date,
                              sex="M", dni="38332661", phone="3515056824"))
-            rows.append(User(username='administracion', password="mate123", name="Jorge",
+            rows.append(User(username='administracion', password="fe5fa0e5941ac9ec4e1a0a07cdb4331a", name="Jorge",
                              lastname="Martinez", email="jmartinez@vecindapp.com",
                              profile_pic="FOTO", birth_date=hired_date,
                              sex="M", dni="23456789", phone="3515229090"))

@@ -15,8 +15,6 @@ class UsersInitializer():
                              lastname="Innocenti", email="santi.innocenti@hotmail.com",
                              profile_pic="FOTO", birth_date=hired_date,
                              sex="M", dni="37732475", phone="3515215562"))
-
-            rows.append()
             rows.append(User(username='guadalupevocos', password="mate123", name="Guadalupe",
                              lastname="Vocos", email="vocosguadalupe@gmail.com",
                              profile_pic="FOTO", birth_date=hired_date,
@@ -25,6 +23,11 @@ class UsersInitializer():
                              lastname="Diaz", email="juan.diaz.cruz11@gmail.com",
                              profile_pic="FOTO", birth_date=hired_date,
                              sex="M", dni="38332661", phone="3515056824"))
+            rows.append(User(username='administracion', password="mate123", name="Jorge",
+                             lastname="Martinez", email="jmartinez@vecindapp.com",
+                             profile_pic="FOTO", birth_date=hired_date,
+                             sex="M", dni="23456789", phone="3515229090"))
+
         try:
             db.session.bulk_save_objects(rows)
             db.session.commit()

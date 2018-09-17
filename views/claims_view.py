@@ -81,7 +81,7 @@ class ClaimsView(FlaskView):
             raise BadRequest('Claim category is Mandatory')
 
         type_claim = ClaimStatus.query
-        type_claim = type_claim.filter(ClaimStatus.name == 'CREADA').first_or_404()
+        type_claim = type_claim.filter(ClaimStatus.name == 'Creada').first_or_404()
         claim_obj.id_status = type_claim.id
 
         try:

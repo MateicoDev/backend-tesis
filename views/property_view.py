@@ -144,10 +144,16 @@ class PartnershipView(FlaskView):
 
         neighborhoods = Neighborhoods.query
         if not id_neighborhood:
-            neighborhoods = neighborhoods.filter(Neighborhoods.city == city_neighborhood)
-            neighborhoods = neighborhoods.order_by(Neighborhoods.id).paginate(int(page), int(per_page), error_out=False)
-            neighborhood_string = self.neighborhoods_schema.dump(neighborhoods).data
-            #Para varios items, tener en cuenta usar el schema de pagination
+            if not city_neighborhood:
+                neighborhoods = neighborhoods.order_by(Neighborhoods.id).paginate(int(page), int(per_page),
+                                                                                  error_out=False)
+                neighborhood_string = self.neighborhoods_schema.dump(neighborhoods).data
+            else:
+                neighborhoods = neighborhoods.filter(Neighborhoods.city == city_neighborhood)
+                neighborhoods = neighborhoods.order_by(Neighborhoods.id).paginate(int(page), int(per_page),
+                                                                                  error_out=False)
+                neighborhood_string = self.neighborhoods_schema.dump(neighborhoods).data
+                #Para varios items, tener en cuenta usar el schema de pagination
         else:
             neighborhoods = neighborhoods.filter(Neighborhoods.id == id_neighborhood).first()
             neighborhood_string = self.neighborhood_schema.dump(neighborhoods).data

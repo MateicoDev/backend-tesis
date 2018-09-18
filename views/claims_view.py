@@ -127,8 +127,8 @@ class ClaimsView(FlaskView):
 
         if not claim_id.id_partnership == claim_message.id_partnership:
             raise BadRequest('Id partnership not its the same in the claim')
-        if not claim_id.id_user == claim_message.id_user:
-            raise BadRequest('Id user not its the same in the claim')
+        # if not claim_id. == claim_message.id_user_sender:
+        #     raise BadRequest('Id user not its the same in the claim')
 
         # send_notification(valid_users, NOTIFICATION_TITLE_CLAIM_MESSAGE, NOTIFICATION_BODY_CLAIM_MESSAGE
         #                   .format(owner.user_name), ID_NOTIFICATION_TYPE_CLAIM_MESSAGE,

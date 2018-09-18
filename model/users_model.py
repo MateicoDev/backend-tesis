@@ -17,6 +17,8 @@ class User(db.Model):
     sex = db.Column(db.String(1), nullable=True)
     dni = db.Column(db.String(12), nullable=True)
     phone = db.Column(db.String(30), nullable=True)
+    #id_property = db.Column(db.Integer, db.ForeignKey('properties.id'))
+    #property = db.relationship('Property', foreign_keys=[id_property] ,cascade='merge')
 
     def __init__(self, username=None, password=None, name=None,
                  lastname=None, email=None,
@@ -34,3 +36,4 @@ class User(db.Model):
         self.sex = sex
         self.dni = dni
         self.phone = phone
+        #self.id_property = property

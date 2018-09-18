@@ -115,7 +115,7 @@ class ClaimsView(FlaskView):
                     db.session.delete(claim_query)
                     db.session.commit()
                 else:
-                    return jsonify({'error': 'Only requests that have not been addressed can be removed'})
+                        return jsonify({'error': 'Only requests that have not been addressed can be removed'})
             except Exception as e:
                 db.session.rollback()
                 print(str(e))

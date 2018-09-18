@@ -29,7 +29,11 @@ class LoginView(FlaskView):
         user_data = self.user_schema.dump(user, many=False).data
 
         return jsonify({'user': user_data})
-     
+
+    #DEBO BUSCAR POR LA PROPIEDAD DEL USUARIO, EL ID DEL PARTNERSHIP A DONDE PERTENECE
+
+
+
     # @route('/social', methods=['POST'])
     # def post(self):
     #     try:

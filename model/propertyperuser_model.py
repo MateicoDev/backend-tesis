@@ -9,11 +9,15 @@ class PropertyPerUser(db.Model):
     property = db.relationship('Property', foreign_keys=[id_property], cascade="merge")
     id_relation = db.Column(db.Integer, db.ForeignKey('relationpropertyperuser.id'), nullable=True)
     relation = db.relationship('RelationPropertyPerUser', foreign_keys=[id_relation], cascade="merge")
+    date_created = db.Column(db.DateTime, nullable = False)
+    date_finished = db.Column(db.DateTime, nullable = True)
 
-    def __init__(self, user=None, property=None, relation=None):
+    def __init__(self, user=None, property=None, relation=None, datecreated=None, datefinished=None):
         self.id_user = user
         self.id_property = property
         self.id_relation = relation
+        self.date_created = datecreated
+        self.date_finished = datefinished
 
 
 class RelationPropertyPerUser(db.Model):

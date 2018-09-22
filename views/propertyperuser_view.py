@@ -1,19 +1,23 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
 
-from schemas import PropertyPerUserSchema, RelationPropertyPerUserSchema
-from schemas import PageOfPropertyPerUserSchema, PageOfRelationPropertyPerUser
-from model import PropertyPerUser, RelationPropertyPerUser
+from schemas import PageOfRelationPropertyPerUserSchema
+from schemas import PropertyPerUserSchema
+from schemas import PageOfPropertyPerUserSchema
+from model import PropertyPerUser
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
+
+from schemas import RelationPropertyPerUserSchema
+
 
 class PropertyPerUserView(FlaskView):
     route_base = '/propertyPerUser/'
     propertyPerUser_schema = PropertyPerUserSchema()
     propertiesPerUser_schema = PageOfPropertyPerUserSchema()
     relationPropertyPerUser_schema = RelationPropertyPerUserSchema()
-    relationsPropertiesPerUser_schema = PageOfRelationPropertyPerUser()
+    relationsPropertiesPerUser_schema = PageOfRelationPropertyPerUserSchema()
 
     def post(self):
         data = request.json

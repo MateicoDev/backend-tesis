@@ -164,7 +164,7 @@ class PageOfNeighborhoodSchema(PaginationSchema):
 class PageOfPropertyPerUserSchema(PaginationSchema):
     items = fields.List(fields.Nested(PropertyPerUserSchema()))
 
-class PageOfRelationPropertyPerUser(PaginationSchema):
+class PageOfRelationPropertyPerUserSchema(PaginationSchema):
     items = fields.List(fields.Nested(RelationPropertyPerUserSchema()))
 
 

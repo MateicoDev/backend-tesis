@@ -3,18 +3,85 @@ from flask import jsonify, request
 
 # from model.property_model import Neighborhoods, Partnership
 from schemas import PageOfPartnershipSchema, PartnershipSchema, PageOfNeighborhoodSchema, NeighborhoodSchema
-from model import Partnership, Neighborhoods
+from schemas import PropertySchema
+from schemas import PageOfPropertySchema
+from model import Partnership, Neighborhoods, Property
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
 
 
 class PartnershipView(FlaskView):
-    route_base = '/property/'
+    route_base = 'property/'
     partnerships_schema = PageOfPartnershipSchema()
     partnership_schema = PartnershipSchema()
     neighborhoods_schema = PageOfNeighborhoodSchema()
     neighborhood_schema = NeighborhoodSchema()
+    property_schema = PropertySchema()
+    properties_schema = PageOfPropertySchema()
+
+    #@route(route_base, methods=['GET'])
+    @route('/properties', methods=['GET'])
+    def get(self):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_property = params.get('id_property', None)
+
+        propiedad = Property.query
+        if not id_property:
+            raise BadRequest('Id property is Mandatory')
+        else:
+            propiedad = propiedad.filter(Property.id == id_property).first()
+            propiedad_data = self.property_schema.dump(propiedad).data
+
+            return jsonify({'Propiedad': propiedad_data})
+
+    #@route(route_base, methods=['POST'])
+    @route('/properties', methods=['POST'])
+    def post(self):
+        data = request.json
+        property_obj = Property()
+
+        partnership = data.get('id_partnership', None)
+        if not partnership:
+            raise BadRequest('Id partnership is Mandatory')
+        floor = data.get('floor', None)
+        ph = data.get('ph', None)
+        block = data.get('block', None)
+        lot = data.get('lot', None)
+
+        property_obj.id_partnership = partnership
+        if not floor:
+            property_obj.floor = None
+        else:
+            property_obj.floor = floor
+        if not ph:
+            property_obj.ph = None
+        else:
+            property_obj.ph = ph
+        if not block:
+            property_obj.block = None
+        else:
+            property_obj.block = block
+        if not lot:
+            property_obj.lot = None
+        else:
+            property_obj.lot = lot
+
+        try:
+            db.session.add(property_obj)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError("Unable to store a new property")
+
+        property_last_insert = Property.query.order_by(Property.id.desc()).first()
+        property_last_insert_data = self.property_schema.dump(property_last_insert).data
+
+        return jsonify({'Property': property_last_insert_data})
+
 
     @route('/partnership', methods=['GET'])
     def get(self):

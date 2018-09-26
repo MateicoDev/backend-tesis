@@ -10,26 +10,20 @@ from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
 
-
-class PartnershipView(FlaskView):
-    route_base = 'property/'
-    partnerships_schema = PageOfPartnershipSchema()
-    partnership_schema = PartnershipSchema()
-    neighborhoods_schema = PageOfNeighborhoodSchema()
-    neighborhood_schema = NeighborhoodSchema()
+class PropertyView(FlaskView):
+    route_base = "/properties"
     property_schema = PropertySchema()
     properties_schema = PageOfPropertySchema()
 
-    #@route(route_base, methods=['GET'])
-    @route('/properties', methods=['GET'])
     def get(self):
         params = request.args
         page = params.get('page', 1)
         per_page = params.get('per_page', 10)
         id_property = params.get('id_property', None)
 
+
         propiedad = Property.query
-        if not id_property:
+        if not id_property: #ACA SE PODRIA PENSAR EN DEVOLVER TODAS LAS PROPIEDAD DE UN CONSORCIO EN PARTICULAR
             raise BadRequest('Id property is Mandatory')
         else:
             propiedad = propiedad.filter(Property.id == id_property).first()
@@ -37,8 +31,6 @@ class PartnershipView(FlaskView):
 
             return jsonify({'Propiedad': propiedad_data})
 
-    #@route(route_base, methods=['POST'])
-    @route('/properties', methods=['POST'])
     def post(self):
         data = request.json
         property_obj = Property()
@@ -81,6 +73,13 @@ class PartnershipView(FlaskView):
         property_last_insert_data = self.property_schema.dump(property_last_insert).data
 
         return jsonify({'Property': property_last_insert_data})
+
+class PartnershipView(FlaskView):
+    route_base = '/property/'
+    partnerships_schema = PageOfPartnershipSchema()
+    partnership_schema = PartnershipSchema()
+    neighborhoods_schema = PageOfNeighborhoodSchema()
+    neighborhood_schema = NeighborhoodSchema()
 
 
     @route('/partnership', methods=['GET'])

@@ -20,11 +20,20 @@ class PropertyView(FlaskView):
         page = params.get('page', 1)
         per_page = params.get('per_page', 10)
         id_property = params.get('id_property', None)
+        id_partnership = params.get('id_partnership', None)
 
 
         propiedad = Property.query
-        if not id_property: #ACA SE PODRIA PENSAR EN DEVOLVER TODAS LAS PROPIEDAD DE UN CONSORCIO EN PARTICULAR
-            raise BadRequest('Id property is Mandatory')
+        if not id_property:
+            if not id_partnership:
+                raise BadRequest('Id property or id partnership is Mandatory')
+            else:
+                propiedades = propiedad.filter(Property.id_partnership == id_partnership)
+                propiedades = propiedades.order_by(Property.id.asc()).paginate(int(page), int(per_page),
+                                                                                error_out=False)
+                propiedades_data = self.properties_schema.dump(propiedades).data
+
+                return jsonify({'Propiedades': propiedades_data})
         else:
             propiedad = propiedad.filter(Property.id == id_property).first()
             propiedad_data = self.property_schema.dump(propiedad).data

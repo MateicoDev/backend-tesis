@@ -40,6 +40,8 @@ class PropertyPerUserView(FlaskView):
         else:
             propertyperuser_obj.id_relation = relation
 
+        propertyperuser_obj.date_finished = None
+
         try:
             db.session.add(propertyperuser_obj)
             db.session.commit()

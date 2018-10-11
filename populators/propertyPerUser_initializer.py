@@ -28,4 +28,13 @@ class PropertyPerUserInitializer():
         rows = []
         if not PropertyPerUser.query.first():
             date_created = datetime.now()
-            rows.append(PropertyPerUser())
+            rows.append(PropertyPerUser(user='2', property='1', relation='1', datecreated=date_created,
+                                        datefinished=None))
+            rows.append(PropertyPerUser(user='2', property='8', relation='2', datecreated=date_created,
+                                        datefinished=None))
+            rows.append(PropertyPerUser(user='3', property='9', relation='4', datecreated=date_created,
+                                        datefinished=None))
+            rows.append(PropertyPerUser(user='4', property='16', relation='1', datecreated=date_created,
+                                        datefinished=None))
+            rows.append(PropertyPerUser(user='4', property='3', relation='1', datecreated=date_created,
+                                        datefinished=None))

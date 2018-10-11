@@ -23,9 +23,9 @@ class PropertyInitializer():
             rows.append(Partnership(name='Torre Angela', address='27 de Abril 370', id_neighborhood='1',
                                     id_user='1', date_created=date_created))
             rows.append(Partnership(name='Torres de Alvear', address='Av Emilio Olmos 185', id_neighborhood='1',
-                                    id_user='2', date_created=date_created))
+                                    id_user='5', date_created=date_created))
             rows.append(Partnership(name='Lomas de la Carolina', address='Av Ej Argentin 9520', id_neighborhood='5',
-                                    id_user='2', date_created=date_created))
+                                    id_user='5', date_created=date_created))
 
 
 
@@ -33,21 +33,21 @@ class PropertyInitializer():
         rows = []
         if not Property.query.first():
             date_created = datetime.now()
-            rows.append(Property(id_partnership='1', floor='0', ph='A', block='', lot=''))
+            rows.append(Property(id_partnership='1', floor='0', ph='A', block='', lot='')) #Id 1
             rows.append(Property(id_partnership='1', floor='0', ph='B', block='', lot=''))
             rows.append(Property(id_partnership='1', floor='0', ph='C', block='', lot=''))
             rows.append(Property(id_partnership='1', floor='1', ph='A', block='', lot=''))
             rows.append(Property(id_partnership='1', floor='1', ph='B', block='', lot=''))
             rows.append(Property(id_partnership='1', floor='1', ph='C', block='', lot=''))
             rows.append(Property(id_partnership='1', floor='1', ph='D', block='', lot=''))
-            rows.append(Property(id_partnership='2', floor='0', ph='A', block='', lot=''))
+            rows.append(Property(id_partnership='2', floor='0', ph='A', block='', lot='')) #Id 8
             rows.append(Property(id_partnership='2', floor='1', ph='A', block='', lot=''))
             rows.append(Property(id_partnership='2', floor='1', ph='B', block='', lot=''))
             rows.append(Property(id_partnership='2', floor='2', ph='A', block='', lot=''))
             rows.append(Property(id_partnership='2', floor='2', ph='B', block='', lot=''))
             rows.append(Property(id_partnership='2', floor='3', ph='A', block='', lot=''))
             rows.append(Property(id_partnership='2', floor='3', ph='B', block='', lot=''))
-            rows.append(Property(id_partnership='3', floor='', ph='', block='8', lot='81'))
+            rows.append(Property(id_partnership='3', floor='', ph='', block='8', lot='81')) #Id 15
             rows.append(Property(id_partnership='3', floor='', ph='', block='8', lot='82'))
             rows.append(Property(id_partnership='3', floor='', ph='', block='8', lot='83'))
             rows.append(Property(id_partnership='3', floor='', ph='', block='10', lot='107'))

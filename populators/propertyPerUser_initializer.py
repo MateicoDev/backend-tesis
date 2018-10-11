@@ -1,5 +1,6 @@
-from model import RelationPropertyPerUser
+from model import RelationPropertyPerUser, PropertyPerUser
 from database import db
+from datetime import datetime
 
 class PropertyPerUserInitializer():
     def init_relation_propertyPerUser(self):
@@ -22,3 +23,9 @@ class PropertyPerUserInitializer():
         except Exception as e:
             db.session.rollback()
             raise e
+
+    def init_propertyPerUser(self):
+        rows = []
+        if not PropertyPerUser.query.first():
+            date_created = datetime.now()
+            rows.append(PropertyPerUser())

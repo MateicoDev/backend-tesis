@@ -16,6 +16,13 @@ class PropertyInitializer():
         if not Neighborhoods.query.filter_by(name='San Martin').first():
             rows.append(Neighborhoods(name='Arguello', city='Cordoba'))
 
+        try:
+            db.session.bulk_save_objects(rows)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
+
     def init_partnership(self):
         rows = []
         if not Partnership.query.first():
@@ -27,6 +34,12 @@ class PropertyInitializer():
             rows.append(Partnership(name='Lomas de la Carolina', address='Av Ej Argentin 9520', id_neighborhood='5',
                                     id_user='5', date_created=date_created))
 
+        try:
+            db.session.bulk_save_objects(rows)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e
 
 
     def init_properties(self):
@@ -55,3 +68,9 @@ class PropertyInitializer():
             rows.append(Property(id_partnership='3', floor='', ph='', block='10', lot='109'))
 
 
+        try:
+            db.session.bulk_save_objects(rows)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e

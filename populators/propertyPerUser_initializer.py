@@ -38,3 +38,10 @@ class PropertyPerUserInitializer():
                                         datefinished=None))
             rows.append(PropertyPerUser(user='4', property='3', relation='1', datecreated=date_created,
                                         datefinished=None))
+
+        try:
+            db.session.bulk_save_objects(rows)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            raise e

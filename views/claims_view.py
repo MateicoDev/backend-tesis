@@ -128,8 +128,8 @@ class ClaimsView(FlaskView):
         data = request.json
         claim_message = ClaimMessages()
         claim_message.date = datetime.now()
-        claim_message.id_user = data.get('id_user', None)
-        if not claim_message.id_user:
+        claim_message.id_user_sender = data.get('id_user_sender', None)
+        if not claim_message.id_user_sender:
             raise BadRequest('Id user is Mandatory')
         claim_message.id_partnership = data.get('id_partnership', None)
         if not claim_message.id_partnership:
@@ -148,6 +148,13 @@ class ClaimsView(FlaskView):
         claim_id = Claim.query
         claim_id = claim_id.filter(Claim.id == claim_message.id_claim)
         claim_id = claim_id.order_by(Claim.date.desc()).first_or_404()
+
+        if claim_id.id_user_sender == claim_message.id_user_sender:
+            claim_message.id_user_reciver = claim_id.id_user_reciver
+        else:
+            claim_message.id_user_reciver = claim_id.id_user_sender
+
+
         if not claim_id:
             raise BadRequest('Claim id not exist')
 

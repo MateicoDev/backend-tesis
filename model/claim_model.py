@@ -67,8 +67,8 @@ class ClaimMessages(db.Model):
     id_claim = db.Column(db.Integer, db.ForeignKey('claim.id'))
     claim = db.relationship('Claim', foreign_keys=[id_claim], cascade="merge")
 
-    def __init__(self, id_user=None, id_partnership=None, comment=None, date=None, id_claim=None):
-        self.id_user = id_user
+    def __init__(self, id_user_sender=None, id_partnership=None, comment=None, date=None, id_claim=None):
+        self.id_user_sender = id_user_sender
         self.id_partnership = id_partnership
         self.comment = comment
         self.date = date

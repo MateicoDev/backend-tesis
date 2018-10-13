@@ -1,7 +1,7 @@
 from database import db
 
 class PropertyPerUser(db.Model):
-    ___tablename__ = "propertyperuser"
+    ___tablename__ = "property_per_user"
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', foreign_keys=[id_user], cascade="merge")

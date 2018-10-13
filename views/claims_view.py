@@ -97,6 +97,33 @@ class ClaimsView(FlaskView):
 
         return jsonify({'claim': claim_data})
 
+    def put(self):
+        data = request.json
+        id_claim = data.get('id_claim', None)
+        id_status = data.get('id_status', None)
+
+        if not id_claim:
+            raise BadRequest('Id claim is Mandatory')
+        if not id_status:
+            raise BadRequest('Id status is Mandatory')
+
+        try:
+            claim_put = Claim.query
+            claim_put = claim_put.get(id_claim)
+            claim_put.id_status = id_status
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unavailable modify status claim')
+
+        claim = Claim.query
+        claim = claim.get(id_claim)
+        claim_modify = self.claim_schema.dump(claim).data
+
+        return jsonify({'Claim modify': claim_modify})
+
     def delete(self):
         params = request.args
         id_claim_delete = params.get('id_claim', None)

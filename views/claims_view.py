@@ -187,7 +187,7 @@ class ClaimsView(FlaskView):
         per_page = params.get('per_page', 10)
         category = params.get('category', None)
 
-        id_claim = params.get('id', None)
+        id_claim = params.get('id_claim', None)
         if not id_claim:
             raise BadRequest('Claim id is Mandatory')
 

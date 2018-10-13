@@ -1,7 +1,9 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
-from schemas import UserReducedSchema
+from schemas import UserReducedSchema, PartnershipSchema, PropertySchema
 from model import User
+from model import Property, Partnership
+from model import PropertyPerUser
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
@@ -12,6 +14,8 @@ from google.auth.transport import requests
 class LoginView(FlaskView):
     route_base = '/login'
     user_schema = UserReducedSchema()
+    property_schema = PropertySchema()
+    partnership_schema = PartnershipSchema()
 
     def post(self):
         data = request.json
@@ -28,8 +32,30 @@ class LoginView(FlaskView):
 
         user_data = self.user_schema.dump(user, many=False).data
 
-        return jsonify({'user': user_data})
-     
+        propertiesPerUser = PropertyPerUser.query.filter(PropertyPerUser.id_user == user.id).ToList()
+        propiedades = []
+
+        for item in propertiesPerUser:
+            propiedad = Property.query.filter(Property.id == item.id_property)
+            propiedad_data = self.property_schema.dump(propiedad, many=False).data
+            consorcio = Partnership.query.filter(Partnership.id == propiedad.id_partnership)
+            consorcio_data = self.partnership_schema.dump(consorcio, many=False).data
+            propiedades.append([propiedad_data, consorcio_data])
+
+        #consorcios = []
+
+        #for item in propiedades:
+        #    consorcio = Partnership.query.filter(Partnership.id == item.id_partnership)
+        #    consorcios.append(consorcio)
+
+
+
+        return jsonify({'user': user_data, 'propiedades': propiedades})
+
+    #DEBO BUSCAR POR LA PROPIEDAD DEL USUARIO, EL ID DEL PARTNERSHIP A DONDE PERTENECE
+
+
+
     # @route('/social', methods=['POST'])
     # def post(self):
     #     try:

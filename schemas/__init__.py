@@ -9,3 +9,9 @@ from schemas import PageOfPartnershipSchema
 from schemas import PartnershipSchema
 from schemas import PageOfNeighborhoodSchema
 from schemas import NeighborhoodSchema
+from schemas import PropertyPerUserSchema
+from schemas import PageOfPropertyPerUserSchema
+from schemas import RelationPropertyPerUserSchema
+from schemas import PageOfRelationPropertyPerUserSchema
+from schemas import PropertySchema
+from schemas import PageOfPropertySchema

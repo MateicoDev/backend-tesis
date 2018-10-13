@@ -97,6 +97,32 @@ class ClaimsView(FlaskView):
 
         return jsonify({'claim': claim_data})
 
+    def delete(self):
+        params = request.args
+        id_claim_delete = params.get('id_claim', None)
+
+        if not id_claim_delete:
+            raise BadRequest('It is not allowed to delete all claim')
+        else:
+            try:
+                claim_query = Claim.query.filter(Claim.id == id_claim_delete).first()
+                claim_delete = claim_query
+                #claim_status = ClaimStatus.query
+                #claim_status = claim_status.filter(ClaimStatus.id == claim_query.id_status)
+                claim_status = ClaimStatus.query.filter(ClaimStatus.id == claim_query.id_status).first()
+
+                if claim_status.name == 'Creada':
+                    db.session.delete(claim_query)
+                    db.session.commit()
+                else:
+                        return jsonify({'error': 'Only requests that have not been addressed can be removed'})
+            except Exception as e:
+                db.session.rollback()
+                print(str(e))
+                raise InternalServerError('Unavailable delete claim')
+
+            return jsonify({'Claim Delete': claim_delete.title})
+
     @route('/messages', methods=['POST'])
     def post_messages(self):
         data = request.json

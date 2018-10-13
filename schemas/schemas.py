@@ -105,6 +105,14 @@ class PartnershipSchema(Schema):
     id_neighborhood = fields.Integer()
     admin = fields.Nested(UserReducedSchema())
 
+class PropertySchema(Schema):
+    id = fields.Integer()
+    id_partnership = fields.Integer()
+    floor = fields.Integer()
+    ph = fields.String()
+    block = fields.Integer()
+    lot = fields.String()
+
 class NeighborhoodSchema(Schema):
     id_neighborhood = fields.Integer()
     name = fields.String()
@@ -120,6 +128,17 @@ class PaginationSchema(Schema):
     per_page = fields.Integer()
     prev_num = fields.Integer()
 
+class PropertyPerUserSchema(Schema):
+    id = fields.Integer()
+    id_user = fields.Integer()
+    id_property = fields.Integer()
+    id_relation = fields.Integer()
+    date_created = fields.DateTime()
+    date_finished = fields.DateTime()
+
+class RelationPropertyPerUserSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
 
 class PageOfClaimsSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimSchema()))
@@ -136,9 +155,17 @@ class PageOfUsersSchema(PaginationSchema):
 class PageOfPartnershipSchema(PaginationSchema):
     items = fields.List(fields.Nested(PartnershipSchema()))
 
+class PageOfPropertySchema(PaginationSchema):
+    items = fields.List(fields.Nested(PropertySchema()))
+
 class PageOfNeighborhoodSchema(PaginationSchema):
     items = fields.List(fields.Nested(NeighborhoodSchema()))
 
+class PageOfPropertyPerUserSchema(PaginationSchema):
+    items = fields.List(fields.Nested(PropertyPerUserSchema()))
+
+class PageOfRelationPropertyPerUserSchema(PaginationSchema):
+    items = fields.List(fields.Nested(RelationPropertyPerUserSchema()))
 
 
 

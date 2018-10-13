@@ -26,7 +26,7 @@ class PropertyPerUserInitializer():
 
     def init_propertyPerUser(self):
         rows = []
-        if not PropertyPerUser.query.filter_by(user='2')first():
+        if not PropertyPerUser.query.filter_by(user='2').first():
             date_created = datetime.now()
             rows.append(PropertyPerUser(user='2', property='1', relation='1', datecreated=date_created,
                                         datefinished=None))

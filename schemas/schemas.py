@@ -91,11 +91,12 @@ class ClaimSchema(Schema):
 
 class ClaimMessagesSchema(Schema):
     id = fields.Integer()
-    id_user = fields.Integer()
     id_partnership = fields.Integer()
     comment = fields.String()
     date = fields.DateTime()
     claim = fields.Nested(ClaimSchema())
+    id_user_reciver = fields.Integer()
+    id_user_sender = fields.Integer()
 
 
 class PartnershipSchema(Schema):

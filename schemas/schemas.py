@@ -141,6 +141,25 @@ class RelationPropertyPerUserSchema(Schema):
     id = fields.Integer()
     name = fields.String()
 
+class VisitorSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+    lastname = fields.String()
+    dni = fields.String()
+    sex = fields.Integer()
+
+class EventSchema(Schema):
+    id = fields.Integer()
+    id_partnership = fields.Integer()
+    hour_since = fields.DateTime()
+    hour_until = fields.DateTime()
+    id_user = fields.Integer()
+
+class VisitorPerEventSchema(Schema):
+    id = fields.Integer()
+    id_visitor = fields.Integer()
+    id_event = fields.Integer()
+
 class PageOfClaimsSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimSchema()))
 
@@ -168,5 +187,11 @@ class PageOfPropertyPerUserSchema(PaginationSchema):
 class PageOfRelationPropertyPerUserSchema(PaginationSchema):
     items = fields.List(fields.Nested(RelationPropertyPerUserSchema()))
 
+class PageOfVisitorSchema(PaginationSchema):
+    items = fields.List(fields.Nested(VisitorSchema()))
 
+class PageOfEventSchema(PaginationSchema):
+    items = fields.List(fields.Nested(EventSchema()))
 
+class PageOfVisitorPerEventSchema(PaginationSchema):
+    items = fields.List(fields.Nested(VisitorPerEventSchema()))

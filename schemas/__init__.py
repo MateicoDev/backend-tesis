@@ -15,3 +15,9 @@ from schemas import RelationPropertyPerUserSchema
 from schemas import PageOfRelationPropertyPerUserSchema
 from schemas import PropertySchema
 from schemas import PageOfPropertySchema
+from schemas import VisitorSchema
+from schemas import PageOfVisitorSchema
+from schemas import EventSchema
+from schemas import PageOfEventSchema
+from schemas import VisitorPerEventSchema
+from schemas import PageOfVisitorPerEventSchema

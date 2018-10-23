@@ -34,6 +34,7 @@ PartnershipView.register(application, route_prefix=api_prefix)
 PropertyView.register(application, route_prefix=api_prefix)
 LoginView.register(application, route_prefix=api_prefix)
 PropertyPerUserView.register(application, route_prefix=api_prefix)
+VisitorView.register(application, route_prefix=api_prefix)
 
 @application.teardown_appcontext
 def shutdown_session(response_or_exc):

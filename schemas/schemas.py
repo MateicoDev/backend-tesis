@@ -146,7 +146,7 @@ class VisitorSchema(Schema):
     name = fields.String()
     lastname = fields.String()
     dni = fields.String()
-    sex = fields.Integer()
+    sex = fields.String()
 
 class EventSchema(Schema):
     id = fields.Integer()

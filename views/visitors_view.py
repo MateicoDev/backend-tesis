@@ -4,7 +4,7 @@ from flask import jsonify, request
 from schemas import VisitorPerEventSchema, VisitorSchema, EventSchema
 from schemas import PageOfVisitorSchema, PageOfVisitorPerEventSchema, PageOfEventSchema
 from model import Visitor, VisitorPerEvent, Event
-
+d
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime

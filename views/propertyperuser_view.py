@@ -4,7 +4,8 @@ from flask import jsonify, request
 from schemas import PageOfRelationPropertyPerUserSchema
 from schemas import PropertyPerUserSchema
 from schemas import PageOfPropertyPerUserSchema
-from model import PropertyPerUser, RelationPropertyPerUser
+from model import PropertyPerUser, RelationPropertyPerUser, Partnership
+from schemas import PartnershipAdministratorSchema, PageOfPartnershipAdministratorSchema
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
@@ -18,6 +19,8 @@ class PropertyPerUserView(FlaskView):
     propertiesPerUser_schema = PageOfPropertyPerUserSchema()
     relationPropertyPerUser_schema = RelationPropertyPerUserSchema()
     relationsPropertiesPerUser_schema = PageOfRelationPropertyPerUserSchema()
+    partnership_per_admin = PartnershipAdministratorSchema()
+    partnerships_per_admin = PageOfPartnershipAdministratorSchema()
 
     def get(self):
         params = request.args
@@ -35,25 +38,25 @@ class PropertyPerUserView(FlaskView):
 
             isTenant = properties.filter(PropertyPerUser.id_relation == 1)
             isOwner = properties.filter(PropertyPerUser.id_relation == 2)
-            isAdmin = properties.filter(PropertyPerUser.id_relation == 3)
+            #isAdmin = properties.filter(PropertyPerUser.id_relation == 3)
             isOwnerHabitant = properties.filter(PropertyPerUser.id_relation == 4)
 
             isTenant = isTenant.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
                                                                                  error_out=False)
             isOwner = isOwner.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
                                                                                  error_out=False)
-            isAdmin = isAdmin.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
-                                                                                 error_out=False)
+            #isAdmin = isAdmin.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
+            #                                                                     error_out=False)
             isOwnerHabitant = isOwnerHabitant.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
                                                                                                  error_out=False)
 
             propertiesIsTenant_data = self.propertiesPerUser_schema.dump(isTenant).data
             propertiesIsOwner_data = self.propertiesPerUser_schema.dump(isOwner).data
-            propertiesIsAdmin_data = self.propertiesPerUser_schema.dump(isAdmin).data
+            #propertiesIsAdmin_data = self.propertiesPerUser_schema.dump(isAdmin).data
             propertiesIsOwnerHabitant_data = self.propertiesPerUser_schema.dump(isOwnerHabitant).data
 
             return jsonify({'Inquilino': propertiesIsTenant_data, 'Propietario': propertiesIsOwner_data,
-                            'Administrador': propertiesIsAdmin_data, 'Prop Habitante': propertiesIsOwnerHabitant_data})
+                            'Prop Habitante': propertiesIsOwnerHabitant_data})
 
         #Pensar en algun filtro para el caso de que un usuario sea admin e inquilino a la vez, para devolver en
         #objetos json diferentes. O el caso de usuarios propietarios e inquilinos
@@ -134,7 +137,7 @@ class PropertyPerUserView(FlaskView):
         return jsonify({'Property Per User': thepropertyperuser})
 
     @route('/relation', methods=['POST'])
-    def post_message(self):
+    def post_relation(self):
         data = request.json
         relation = RelationPropertyPerUser()
         relation.name = data.get('name', None)
@@ -151,3 +154,22 @@ class PropertyPerUserView(FlaskView):
         relation = self.relationPropertyPerUser_schema.dump(relations).data
 
         return jsonify({'Relacion': relation})
+
+    @route('/partnershipsAdmin', methods=['GET'])
+    def get_partnership_admin(self):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_admin = params.get('admin', None)
+
+        partnerships = Partnership.query
+        if not id_admin:
+            raise BadRequest('Admin id is Mandatory')
+        else:
+            partnerships = partnerships.filter(Partnership.id_user == id_admin)
+            partnerships = partnerships.order_by(Partnership.name.desc()).paginate(int(page), int(per_page),
+                                                                                 error_out=False)
+
+        partnerships_data = self.partnerships_per_admin.dump(partnerships).data
+
+        return jsonify({'Partnership': partnerships_data})

@@ -160,17 +160,21 @@ class VisitorPerEventSchema(Schema):
     id_visitor = fields.Integer()
     id_event = fields.Integer()
 
+class PartnershipAdministratorSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+
+class PageOfPartnershipAdministratorSchema(PaginationSchema):
+    items = fields.List(fields.Nested(PartnershipAdministratorSchema()))
+
 class PageOfClaimsSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimSchema()))
-
 
 class PageOfClaimsMessagesSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimMessagesSchema()))
 
-
 class PageOfUsersSchema(PaginationSchema):
     items = fields.List(fields.Nested(UserReducedSchema()))
-
 
 class PageOfPartnershipSchema(PaginationSchema):
     items = fields.List(fields.Nested(PartnershipSchema()))

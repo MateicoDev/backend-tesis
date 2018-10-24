@@ -5,6 +5,7 @@ from flask import jsonify, request
 from schemas import PageOfPartnershipSchema, PartnershipSchema, PageOfNeighborhoodSchema, NeighborhoodSchema
 from schemas import PropertySchema
 from schemas import PageOfPropertySchema
+
 from model import Partnership, Neighborhoods, Property
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
@@ -282,3 +283,6 @@ class PartnershipView(FlaskView):
                 raise InternalServerError('Unavailable delete neighborhood')
 
             return jsonify({'Neighborhood Delete': neighborhood_delete.name})
+
+
+

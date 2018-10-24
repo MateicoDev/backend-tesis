@@ -4,7 +4,7 @@ from flask import jsonify, request
 from schemas import VisitorPerEventSchema, VisitorSchema, EventSchema
 from schemas import PageOfVisitorSchema, PageOfVisitorPerEventSchema, PageOfEventSchema
 from model import Visitor, VisitorPerEvent, Event
-d
+
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
@@ -61,3 +61,17 @@ class VisitorView(FlaskView):
         visitor_data  = self.visitor_schema.dump(visitor_save)
 
         return jsonify({'Visitor': visitor_data})
+
+#class EventView(FlaskView):
+ #   route_base = "/VisitorPerEvent/"
+  #  event_schema = EventSchema()
+   # events_schema = PageOfEventSchema()
+
+    #@route('/event', methods=['GET'])
+    #def get(self):
+     #   params = request.args
+      #  page = params.get('page', 1)
+       # per_page = params.get('per_page', 10)
+        #partnership = params.get('id_partnership', None)
+
+

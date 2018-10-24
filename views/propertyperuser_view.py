@@ -4,7 +4,7 @@ from flask import jsonify, request
 from schemas import PageOfRelationPropertyPerUserSchema
 from schemas import PropertyPerUserSchema
 from schemas import PageOfPropertyPerUserSchema
-from model import PropertyPerUser, RelationPropertyPerUser, Partnership
+from model import PropertyPerUser, RelationPropertyPerUser, Partnership, Property
 from schemas import PartnershipAdministratorSchema, PageOfPartnershipAdministratorSchema
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
@@ -32,17 +32,33 @@ class PropertyPerUserView(FlaskView):
         if not idUser:
             raise BadRequest('User ID is Mandatory')
         else:
-            properties = propertiesPerUser_data.filter(PropertyPerUser.id_user == idUser)
-            #properties = properties.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
-            #                                                                     error_out=False)
+            prop = propertiesPerUser_data.join(Property).join(Partnership).add_columns(PropertyPerUser.id,
+                                                                              PropertyPerUser.id_user,
+                                                                              PropertyPerUser.id_property,
+                                                                              Property.floor, Property.ph,
+                                                                              Property.block, Property.lot,
+                                                                              PropertyPerUser.id_relation,
+                                                                              PropertyPerUser.date_created,
+                                                                              PropertyPerUser.date_finished,
+                                                                              Partnership.id, Partnership.name).\
+                                                                              filter(PropertyPerUser.id == idUser)
 
-            isTenant = properties.filter(PropertyPerUser.id_relation == 1)
-            isOwner = properties.filter(PropertyPerUser.id_relation == 2)
+            #properties = prop.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
+             #                                                                    error_out=False)
+
+            isTenant = prop.filter(PropertyPerUser.id_relation == 1)
+
+            isOwner = prop.filter(PropertyPerUser.id_relation == 2)
             #isAdmin = properties.filter(PropertyPerUser.id_relation == 3)
-            isOwnerHabitant = properties.filter(PropertyPerUser.id_relation == 4)
+            isOwnerHabitant = prop.filter(PropertyPerUser.id_relation == 4)
+
+
+
+
 
             isTenant = isTenant.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
                                                                                  error_out=False)
+
             isOwner = isOwner.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
                                                                                  error_out=False)
             #isAdmin = isAdmin.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),

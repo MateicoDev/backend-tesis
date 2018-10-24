@@ -133,9 +133,15 @@ class PropertyPerUserSchema(Schema):
     id = fields.Integer()
     id_user = fields.Integer()
     id_property = fields.Integer()
+    floor = fields.Integer()
+    ph = fields.String()
+    block = fields.Integer()
+    lot = fields.String()
     id_relation = fields.Integer()
     date_created = fields.DateTime()
     date_finished = fields.DateTime()
+    id_partnership = fields.Integer()
+    name = fields.Integer()
 
 class RelationPropertyPerUserSchema(Schema):
     id = fields.Integer()

@@ -98,7 +98,6 @@ class ClaimMessagesSchema(Schema):
     id_user_reciver = fields.Integer()
     id_user_sender = fields.Integer()
 
-
 class PartnershipSchema(Schema):
     id = fields.Integer()
     name = fields.String()
@@ -108,11 +107,13 @@ class PartnershipSchema(Schema):
 
 class PropertySchema(Schema):
     id = fields.Integer()
-    id_partnership = fields.Integer()
+    id_partnership = fields.Nested(PartnershipSchema())
     floor = fields.Integer()
     ph = fields.String()
     block = fields.Integer()
     lot = fields.String()
+
+
 
 class NeighborhoodSchema(Schema):
     id_neighborhood = fields.Integer()
@@ -132,16 +133,9 @@ class PaginationSchema(Schema):
 class PropertyPerUserSchema(Schema):
     id = fields.Integer()
     id_user = fields.Integer()
-    id_property = fields.Integer()
-    floor = fields.Integer()
-    ph = fields.String()
-    block = fields.Integer()
-    lot = fields.String()
+    property = fields.Nested(PropertySchema())
+    partnership = fields.Nested(PartnershipSchema())
     id_relation = fields.Integer()
-    date_created = fields.DateTime()
-    date_finished = fields.DateTime()
-    id_partnership = fields.Integer()
-    name = fields.Integer()
 
 class RelationPropertyPerUserSchema(Schema):
     id = fields.Integer()

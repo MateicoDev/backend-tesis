@@ -28,32 +28,42 @@ class PropertyPerUserView(FlaskView):
         per_page = params.get('per_page', 10)
         idUser = params.get('id_user', None)
 
-        propertiesPerUser_data = PropertyPerUser.query
+        #propertiesPerUser_data = PropertyPerUser.query
         if not idUser:
             raise BadRequest('User ID is Mandatory')
         else:
-            prop = propertiesPerUser_data.join(Property).join(Partnership).add_columns(PropertyPerUser.id,
-                                                                              PropertyPerUser.id_user,
-                                                                              PropertyPerUser.id_property,
-                                                                              Property.floor, Property.ph,
-                                                                              Property.block, Property.lot,
-                                                                              PropertyPerUser.id_relation,
-                                                                              PropertyPerUser.date_created,
-                                                                              PropertyPerUser.date_finished,
-                                                                              Partnership.id, Partnership.name).\
-                                                                              filter(PropertyPerUser.id == idUser)
+            #prop = propertiesPerUser_data.join(Property).join(Partnership).add_columns(PropertyPerUser.id,
+            #                                                                  PropertyPerUser.id_user,
+            #                                                                  PropertyPerUser.id_property,
+            #                                                                  Property.floor, Property.ph,
+            #                                                                  Property.block, Property.lot,
+            #                                                                  PropertyPerUser.id_relation,
+            #                                                                  PropertyPerUser.date_created,
+            #                                                                  PropertyPerUser.date_finished,
+            #                                                                  Partnership.id, Partnership.name).\
+            #                                                                  filter(PropertyPerUser.id_user == idUser)
 
-            #properties = prop.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
-             #                                                                    error_out=False)
+            #prop = PropertyPerUser.query.filter(PropertyPerUser.id_user == idUser).join(Property).join(Partnership).\
+            #    add_columns(PropertyPerUser.id, PropertyPerUser.id_user, PropertyPerUser.id_property,
+            #    Property.floor, Property.ph, Property.block, Property.lot, PropertyPerUser.id_relation,
+            #    PropertyPerUser.date_created, PropertyPerUser.date_finished, Partnership.id, Partnership.name)
+            #propertiess = Property.query.join(Partnership).filter(Partnership.id == Property.id_partnership)
+            #prop = PropertyPerUser.query.filter(PropertyPerUser.id_user == idUser).join(Property).\
+            #    filter(PropertyPerUser.id_user == idUser)
+
+
+            prop = PropertyPerUser.query.filter(PropertyPerUser.id_user == idUser)
+                #.outerjoin(Property,
+                #                                                    PropertyPerUser.id_property == Property.id)
+
+            #prop = prop.outerjoin(Partnership, Property.id_partnership == Partnership.id)
+
 
             isTenant = prop.filter(PropertyPerUser.id_relation == 1)
 
             isOwner = prop.filter(PropertyPerUser.id_relation == 2)
             #isAdmin = properties.filter(PropertyPerUser.id_relation == 3)
             isOwnerHabitant = prop.filter(PropertyPerUser.id_relation == 4)
-
-
-
 
 
             isTenant = isTenant.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
@@ -65,6 +75,7 @@ class PropertyPerUserView(FlaskView):
             #                                                                     error_out=False)
             isOwnerHabitant = isOwnerHabitant.order_by(PropertyPerUser.id.desc()).paginate(int(page), int(per_page),
                                                                                                  error_out=False)
+
 
             propertiesIsTenant_data = self.propertiesPerUser_schema.dump(isTenant).data
             propertiesIsOwner_data = self.propertiesPerUser_schema.dump(isOwner).data

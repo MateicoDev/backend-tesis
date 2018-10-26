@@ -98,6 +98,11 @@ class ClaimMessagesSchema(Schema):
     id_user_reciver = fields.Integer()
     id_user_sender = fields.Integer()
 
+class NeighborhoodSchema(Schema):
+    id_neighborhood = fields.Integer()
+    name = fields.String()
+    city = fields.String()
+
 class PartnershipSchema(Schema):
     id = fields.Integer()
     name = fields.String()
@@ -107,19 +112,11 @@ class PartnershipSchema(Schema):
 
 class PropertySchema(Schema):
     id = fields.Integer()
-    id_partnership = fields.Nested(PartnershipSchema())
+    id_partnership = fields.Integer() #No me funciona el .Nested(PartnershipSchema())
     floor = fields.Integer()
     ph = fields.String()
     block = fields.Integer()
     lot = fields.String()
-
-
-
-class NeighborhoodSchema(Schema):
-    id_neighborhood = fields.Integer()
-    name = fields.String()
-    city = fields.String()
-
 
 class PaginationSchema(Schema):
     has_next = fields.Boolean()
@@ -133,9 +130,9 @@ class PaginationSchema(Schema):
 class PropertyPerUserSchema(Schema):
     id = fields.Integer()
     id_user = fields.Integer()
-    property = fields.Nested(PropertySchema())
-    partnership = fields.Nested(PartnershipSchema())
+    partner = fields.Integer() #No quiere funcionar ni con Integer, ni con Nested de partnership, ni con id_partnership
     id_relation = fields.Integer()
+    property = fields.Nested(PropertySchema())
 
 class RelationPropertyPerUserSchema(Schema):
     id = fields.Integer()

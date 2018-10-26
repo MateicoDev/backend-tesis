@@ -14,6 +14,7 @@ class VisitorView(FlaskView):
     visitor_schema = VisitorSchema()
     visitors_schema = PageOfVisitorSchema()
 
+
     def get(self):
         params = request.args
         page = params.get('page', 1)
@@ -58,20 +59,65 @@ class VisitorView(FlaskView):
             raise InternalServerError('Unable to store a new Visitor')
 
         visitor_save = Visitor.query.order_by(Visitor.id.desc()).first()
-        visitor_data  = self.visitor_schema.dump(visitor_save)
+        visitor_data  = self.visitor_schema.dump(visitor_save).data
 
         return jsonify({'Visitor': visitor_data})
 
-#class EventView(FlaskView):
- #   route_base = "/VisitorPerEvent/"
-  #  event_schema = EventSchema()
-   # events_schema = PageOfEventSchema()
 
-    #@route('/event', methods=['GET'])
-    #def get(self):
-     #   params = request.args
-      #  page = params.get('page', 1)
-       # per_page = params.get('per_page', 10)
-        #partnership = params.get('id_partnership', None)
+class EventView(FlaskView):
+    route_base = '/events/'
+    event_schema = EventSchema()
+    events_schema = PageOfEventSchema()
+
+    @route('/', methods=['GET'])
+    def get(self):
+        params = request.args
+        #page = params.get('page', 1)
+        #per_page = params.get('per_page', 10)
+        id_event = params.get('id_event', None)
+
+        if not id_event:
+            raise BadRequest('Event id is Mandatory')
+        else:
+            event = Event.query.get(id_event)
+            #event = event.paginate(int(page), int(per_page), error_out=False)
+
+        event_data = self.event_schema.dump(event).data
+
+        return jsonify({'Evento': event_data})
+
+    @route('/', methods=['POST'])
+    def post(self):
+        data = request.json
+        event_obj = Event()
+
+        event_obj.id_partnership = data.get('id_partnership', None)
+        if not event_obj.id_partnership:
+            raise BadRequest('Partnership is Mandatory')
+        event_obj.hour_since = data.get('hour_since', None)
+        if not event_obj.hour_since:
+            raise BadRequest('Hour since is Mandatory')
+        event_obj.hour_until = data.get('hour_until', None)
+        if not event_obj.hour_until:
+            raise BadRequest('Hour until is Mandatory', None)
+        event_obj.id_user = data.get('id_user', None)
+        if not event_obj.id_user:
+            raise BadRequest('User id is Mandatory', None)
+
+        try:
+            db.session.add(event_obj)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unable to store a new Visitor')
+
+        event_save = Event.query.order_by(Event.id.desc()).first()
+        event_save = self.event_schema.dump(event_save).data
+
+        return jsonify({'Event': event_save})
+
+
+
 
 

@@ -117,7 +117,90 @@ class EventView(FlaskView):
 
         return jsonify({'Event': event_save})
 
+class VisitorPerEventView(FlaskView):
+    route_base = '/VisitorsPerEvent/'
+    visitorPerEvent = VisitorPerEventSchema()
+    visitorsPerEvents = PageOfVisitorPerEventSchema()
 
+    def registerEvent(self, Event):
+        event_obj = self.Event()
 
+        event_obj.id_partnership = Event.id_partnership
+        event_obj.hour_since = Event.hour_since
+        event_obj.hour_until = Event.hour_until
+        event_obj.id_user = Event.id_user
+
+        try:
+            db.session.add(event_obj)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unable to store a new Event')
+
+        event_save = self.Event.query.order_by(Event.id.desc()).first()
+
+        return event_save.id
+
+    def registerVisitor(self, Visitor):
+        visitor_obj = self.Visitor()
+
+        visitante = self.Visitor.query.filter(self.Visitor.dni == Visitor.dni)
+
+        if not visitante:
+            visitor_obj.name = Visitor.name
+            visitor_obj.lastname = Visitor.lastname
+            visitor_obj.dni = Visitor.dni
+            visitor_obj.sex = Visitor.sex
+
+            try:
+                db.session.add(visitor_obj)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(str(e))
+                raise InternalServerError('Unable to store a new Visitor')
+
+            visitor_save = self.Visitor.query.order_by(self.Visitor.id.desc()).first()
+
+            return visitor_save.id
+        else:
+            return visitante.id
+
+    def registerVisitorPerEvent(self, id_visitor, id_event):
+        visitorPerEvent_obj = VisitorPerEvent()
+
+        visitorPerEvent_obj.visitor = id_visitor
+        visitorPerEvent_obj.event = id_event
+
+        try:
+            db.session.add(visitorPerEvent_obj)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unable to store a Visitor per Event')
+
+        visitorPerEvent_save = self.VisitorPerEvent.query.order_by(self.VisitorPerEvent.id.desc()).first()
+
+        return visitorPerEvent_save
+
+    @route('/', methods=['GET'])
+    def get(self):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_event = params.get('id_event', None)
+
+        if not id_event:
+            raise BadRequest('Event id is Mandatory')
+        else:
+            visitors = VisitorPerEvent.query.filter(VisitorPerEvent.id_event == id_event)
+            visitors = visitors.order_by(VisitorPerEvent.id_visitor.asc()).paginate(int(page),
+                                                                                    int(per_page), error_out=False)
+
+        visitantesEvento_data = self.visitorsPerEvents.dump(visitors).data
+
+        return jsonify({'Visitors Per Event': visitantesEvento_data})
 
 

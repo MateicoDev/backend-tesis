@@ -33,7 +33,7 @@ class Event(db.Model):
 
 
 class VisitorPerEvent(db.Model):
-    __tablename__ = 'visitorPerEvent'
+    __tablename__ = 'visitor_per_event'
     id = db.Column(db.Integer, primary_key=True)
     id_visitor = db.Column(db.Integer, db.ForeignKey('visitors.id'))
     visitor = db.relationship('Visitor', foreign_keys=[id_visitor], cascade='merge')

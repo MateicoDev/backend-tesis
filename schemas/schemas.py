@@ -171,6 +171,40 @@ class PartnershipAdministratorSchema(Schema):
     id = fields.Integer()
     name = fields.String()
 
+class SpendingTypeSchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+
+class StatusExpensePaySchema(Schema):
+    id = fields.Integer()
+    name = fields.String()
+
+class ExpensePartnershipSchema(Schema):
+    id = fields.Integer()
+    id_partnership = fields.Integer() #deberia ser un nested, pero ya me canse de probar partnership y q no funcione
+    month = fields.String()
+    description = fields.String()
+    generated_date = fields.DateTime()
+    total_month = fields.Float()
+
+class SpendingSchema(Schema):
+    id = fields.Integer()
+    date = fields.DateTime()
+    total_price = fields.Float()
+    id_expense = fields.Integer() #deberia ser Nested
+    observation = fields.String()
+    id_type = fields.Integer() #deberia ser nested
+
+class ExpensePerPropertySchema(Schema):
+    id = fields.Integer()
+    id_expense = fields.Integer() #deberia ser nested
+    id_prop_per_user = fields.Integer() #deberia ser nested
+    total_cost = fields.Float()
+    date_issue = fields.DateTime()
+    date_expiry = fields.DateTime()
+    date_paid = fields.DateTime()
+    observation = fields.String()
+    id_status = fields.Integer() #deberia ser nested
 
 class PageOfPartnershipAdministratorSchema(PaginationSchema):
     items = fields.List(fields.Nested(PartnershipAdministratorSchema()))
@@ -218,3 +252,18 @@ class PageOfEventSchema(PaginationSchema):
 
 class PageOfVisitorPerEventSchema(PaginationSchema):
     items = fields.List(fields.Nested(VisitorPerEventSchema()))
+
+class PageOfSpendingTypeSchema(PaginationSchema):
+    items = fields.List(fields.Nested(SpendingTypeSchema()))
+
+class PageOfStatusExpensePaySchema(PaginationSchema):
+    items = fields.List(fields.Nested(StatusExpensePaySchema()))
+
+class PageOfExpensePartnershipSchema(PaginationSchema):
+    items = fields.List(fields.Nested(ExpensePartnershipSchema()))
+
+class PageOfSpendingSchema(PaginationSchema):
+    items = fields.List(fields.Nested(SpendingSchema()))
+
+class PageOfExpensePerPropertySchema(PaginationSchema):
+    items = fields.List(fields.Nested(ExpensePerPropertySchema()))

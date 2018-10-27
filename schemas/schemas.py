@@ -98,17 +98,20 @@ class ClaimMessagesSchema(Schema):
     id_user_reciver = fields.Integer()
     id_user_sender = fields.Integer()
 
+
 class NeighborhoodSchema(Schema):
     id_neighborhood = fields.Integer()
     name = fields.String()
     city = fields.String()
 
+
 class PartnershipSchema(Schema):
     id = fields.Integer()
     name = fields.String()
     address = fields.String()
-    id_neighborhood = fields.Integer()
+    id_neighborhood = fields.Integer() #No funciona el Nested(NeigborhoodSchema())
     admin = fields.Nested(UserReducedSchema())
+
 
 class PropertySchema(Schema):
     id = fields.Integer()
@@ -117,6 +120,7 @@ class PropertySchema(Schema):
     ph = fields.String()
     block = fields.Integer()
     lot = fields.String()
+
 
 class PaginationSchema(Schema):
     has_next = fields.Boolean()
@@ -127,6 +131,7 @@ class PaginationSchema(Schema):
     per_page = fields.Integer()
     prev_num = fields.Integer()
 
+
 class PropertyPerUserSchema(Schema):
     id = fields.Integer()
     id_user = fields.Integer()
@@ -134,9 +139,11 @@ class PropertyPerUserSchema(Schema):
     id_relation = fields.Integer()
     property = fields.Nested(PropertySchema())
 
+
 class RelationPropertyPerUserSchema(Schema):
     id = fields.Integer()
     name = fields.String()
+
 
 class VisitorSchema(Schema):
     id = fields.Integer()
@@ -145,6 +152,7 @@ class VisitorSchema(Schema):
     dni = fields.String()
     sex = fields.String()
 
+
 class EventSchema(Schema):
     id = fields.Integer()
     id_partnership = fields.Integer()
@@ -152,47 +160,61 @@ class EventSchema(Schema):
     hour_until = fields.DateTime()
     id_user = fields.Integer()
 
+
 class VisitorPerEventSchema(Schema):
     id = fields.Integer()
-    id_visitor = fields.Integer()
-    id_event = fields.Integer()
+    id_visitor = fields.Nested(VisitorSchema()) #No funciona el Nested de VisitorSchema()
+    id_event = fields.Integer() #No funciona el Nested de EventSchema()
+
 
 class PartnershipAdministratorSchema(Schema):
     id = fields.Integer()
     name = fields.String()
 
+
 class PageOfPartnershipAdministratorSchema(PaginationSchema):
     items = fields.List(fields.Nested(PartnershipAdministratorSchema()))
+
 
 class PageOfClaimsSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimSchema()))
 
+
 class PageOfClaimsMessagesSchema(PaginationSchema):
     items = fields.List(fields.Nested(ClaimMessagesSchema()))
+
 
 class PageOfUsersSchema(PaginationSchema):
     items = fields.List(fields.Nested(UserReducedSchema()))
 
+
 class PageOfPartnershipSchema(PaginationSchema):
     items = fields.List(fields.Nested(PartnershipSchema()))
+
 
 class PageOfPropertySchema(PaginationSchema):
     items = fields.List(fields.Nested(PropertySchema()))
 
+
 class PageOfNeighborhoodSchema(PaginationSchema):
     items = fields.List(fields.Nested(NeighborhoodSchema()))
+
 
 class PageOfPropertyPerUserSchema(PaginationSchema):
     items = fields.List(fields.Nested(PropertyPerUserSchema()))
 
+
 class PageOfRelationPropertyPerUserSchema(PaginationSchema):
     items = fields.List(fields.Nested(RelationPropertyPerUserSchema()))
+
 
 class PageOfVisitorSchema(PaginationSchema):
     items = fields.List(fields.Nested(VisitorSchema()))
 
+
 class PageOfEventSchema(PaginationSchema):
     items = fields.List(fields.Nested(EventSchema()))
+
 
 class PageOfVisitorPerEventSchema(PaginationSchema):
     items = fields.List(fields.Nested(VisitorPerEventSchema()))

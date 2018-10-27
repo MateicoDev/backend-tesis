@@ -6,7 +6,7 @@ class PropertyPerUser(db.Model):
     id_user = db.Column(db.Integer, db.ForeignKey('users.id'))
     user = db.relationship('User', foreign_keys=[id_user], cascade="merge")
     id_property = db.Column(db.Integer, db.ForeignKey('properties.id'))
-    property = db.relationship('Property', foreign_keys=[   id_property], cascade="merge")
+    property = db.relationship('Property', foreign_keys=[id_property], cascade="merge")
     id_relation = db.Column(db.Integer, db.ForeignKey('relationpropertyperuser.id'), nullable=True)
     relation = db.relationship('RelationPropertyPerUser', foreign_keys=[id_relation], cascade="merge")
     date_created = db.Column(db.DateTime, nullable = False)

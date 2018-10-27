@@ -4,7 +4,7 @@ from database import db
 class ClaimType(db.Model):
     __tablename__ = 'claim_type'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=True)
+    name = db.Column(db.String, nullable=False)
 
     def __init__(self, name=None):
         self.name = name
@@ -13,7 +13,7 @@ class ClaimType(db.Model):
 class ClaimStatus(db.Model):
     __tablename__ = 'claim_status'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=True)
+    name = db.Column(db.String, nullable=False)
 
     def __init__(self, name=None):
         self.name = name

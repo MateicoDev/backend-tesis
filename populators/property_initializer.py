@@ -67,7 +67,6 @@ class PropertyInitializer():
             rows.append(Property(id_partnership='3', floor=None, ph=None, block='10', lot='108'))
             rows.append(Property(id_partnership='3', floor=None, ph=None, block='10', lot='109'))
 
-
         try:
             db.session.bulk_save_objects(rows)
             db.session.commit()

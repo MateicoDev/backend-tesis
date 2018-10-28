@@ -9,11 +9,11 @@ from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
 
+
 class VisitorView(FlaskView):
     route_base = "/visitors"
     visitor_schema = VisitorSchema()
     visitors_schema = PageOfVisitorSchema()
-
 
     def get(self):
         params = request.args
@@ -31,7 +31,7 @@ class VisitorView(FlaskView):
 
         visitantes_data = self.visitors_schema.dump(visitantes).data
 
-        return jsonify({'Visitantes' : visitantes_data})
+        return jsonify({'Visitantes': visitantes_data})
 
     def post(self):
         data = request.json
@@ -117,18 +117,19 @@ class EventView(FlaskView):
 
         return jsonify({'Event': event_save})
 
+
 class VisitorPerEventView(FlaskView):
     route_base = '/VisitorsPerEvent/'
     visitorPerEvent = VisitorPerEventSchema()
     visitorsPerEvents = PageOfVisitorPerEventSchema()
 
-    def registerEvent(self, Event):
+    def register_event(self, event):
         event_obj = self.Event()
 
-        event_obj.id_partnership = Event.id_partnership
-        event_obj.hour_since = Event.hour_since
-        event_obj.hour_until = Event.hour_until
-        event_obj.id_user = Event.id_user
+        event_obj.id_partnership = event.id_partnership
+        event_obj.hour_since = event.hour_since
+        event_obj.hour_until = event.hour_until
+        event_obj.id_user = event.id_user
 
         try:
             db.session.add(event_obj)
@@ -138,7 +139,7 @@ class VisitorPerEventView(FlaskView):
             print(str(e))
             raise InternalServerError('Unable to store a new Event')
 
-        event_save = self.Event.query.order_by(Event.id.desc()).first()
+        event_save = self.Event.query.order_by(event.id.desc()).first()
 
         return event_save.id
 

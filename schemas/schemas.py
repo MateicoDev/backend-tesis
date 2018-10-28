@@ -115,7 +115,7 @@ class PartnershipSchema(Schema):
 
 class PropertySchema(Schema):
     id = fields.Integer()
-    id_partnership = fields.Integer() #No me funciona el .Nested(PartnershipSchema())
+    partnership = fields.Nested(PartnershipSchema()) #No me funciona el .Nested(PartnershipSchema())
     floor = fields.Integer()
     ph = fields.String()
     block = fields.Integer()
@@ -171,13 +171,16 @@ class PartnershipAdministratorSchema(Schema):
     id = fields.Integer()
     name = fields.String()
 
+
 class SpendingTypeSchema(Schema):
     id = fields.Integer()
     name = fields.String()
 
+
 class StatusExpensePaySchema(Schema):
     id = fields.Integer()
     name = fields.String()
+
 
 class ExpensePartnershipSchema(Schema):
     id = fields.Integer()

@@ -40,7 +40,7 @@ class Property(db.Model):
     __tablename__="properties"
     id = db.Column(db.Integer, primary_key=True)
     id_partnership = db.Column(db.Integer, db.ForeignKey('partnership.id'))
-    partnership = db.relationship('Partnership', foreign_keys=[id_partnership], cascade="merge")
+    partnership = db.relationship('Partnership', cascade='merge', backref=db.backref('partnership'))
     floor = db.Column(db.Integer, nullable=True) #ya que si es un country puede que sea por lote y no por piso y dpto
     ph = db.Column(db.String, nullable=True)
     block = db.Column(db.Integer, nullable=True)

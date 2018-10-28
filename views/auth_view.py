@@ -32,13 +32,13 @@ class LoginView(FlaskView):
 
         user_data = self.user_schema.dump(user, many=False).data
 
-        propertiesPerUser = PropertyPerUser.query.filter(PropertyPerUser.id_user == user.id).ToList()
+        propertiesPerUser = PropertyPerUser.query.filter(PropertyPerUser.id_user == user.id).all()
         propiedades = []
 
         for item in propertiesPerUser:
-            propiedad = Property.query.filter(Property.id == item.id_property)
+            propiedad = Property.query.filter(Property.id == item.id_property).first()
             propiedad_data = self.property_schema.dump(propiedad, many=False).data
-            consorcio = Partnership.query.filter(Partnership.id == propiedad.id_partnership)
+            consorcio = Partnership.query.filter(Partnership.id == propiedad.partnership.id)
             consorcio_data = self.partnership_schema.dump(consorcio, many=False).data
             propiedades.append([propiedad_data, consorcio_data])
 

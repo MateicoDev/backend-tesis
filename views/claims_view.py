@@ -1,5 +1,5 @@
 from flask_classy import FlaskView, route
-from flask import jsonify, request
+from flask import jsonify, request, make_response
 from schemas import PageOfClaimsSchema, ClaimTypeSchema, ClaimSchema, ClaimMessagesSchema, PageOfClaimsMessagesSchema
 from model import Claim, ClaimType, ClaimStatus, ClaimMessages
 from database import db
@@ -36,7 +36,14 @@ class ClaimsView(FlaskView):
             claims = claims_data.order_by(Claim.date.desc()).paginate(int(page), int(per_page), error_out=False)
         claims_data = self.claims_schema.dump(claims).data
 
-        return jsonify({'claims': claims_data})
+        data = jsonify({'claims': claims_data})
+        resp = make_response(data)
+        count = claims.total
+        content = "items 0-9/" + repr(count)
+        resp.headers['Content-Range'] = content
+        resp.headers["Access-Control-Expose-Headers"] = "content-range"
+
+        return resp
 
     def post(self):
         # owner = authenticator.basic_auth(request.authorization, "CreateCLAIM")

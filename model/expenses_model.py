@@ -22,17 +22,25 @@ class ExpensePartnership(db.Model):
     id_partnership = db.Column(db.Integer, db.ForeignKey('partnership.id'))
     partnership = db.relationship('Partnership', foreign_keys=[id_partnership], cascade="merge")
     month = db.Column(db.String, nullable=False)
+    year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(500), nullable=True)
+    since_date = db.Column(db.DateTime, nullable=False)
+    until_date = db.Column(db.DateTime, nullable=False)
     generated_date = db.Column(db.DateTime, nullable=True)
     total_month = db.Column(db.Float, nullable=True)
+    active = db.Column(db.Float, nullable=True) #Dependiente del until_date
 
-    def __init__(self, id_partnership=None, month=None, description=None,
-                 generated_date=None, total_month=None):
+    def __init__(self, id_partnership=None, month=None, year=None, description=None,
+                 since_date=None, until_date=None, generated_date=None, total_month=None, active=None):
         self.id_partnership = id_partnership
         self.month = month
+        self.year = year
         self.description = description
+        self.since_date = since_date
+        self.until_date = until_date
         self.generated_date = generated_date
         self.total_month = total_month
+        self.active = active
 
 class Spending(db.Model):
     __tablename__ = 'spending'

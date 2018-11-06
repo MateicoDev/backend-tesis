@@ -23,3 +23,9 @@ from schemas import VisitorPerEventSchema
 from schemas import PageOfVisitorPerEventSchema
 from schemas import PartnershipAdministratorSchema
 from schemas import PageOfPartnershipAdministratorSchema
+from schemas import SpendingTypeSchema
+from schemas import SpendingSchema
+from schemas import ExpensePartnershipSchema
+from schemas import PageOfSpendingSchema
+from schemas import PageOfSpendingTypeSchema
+from schemas import PageOfExpensePartnershipSchema

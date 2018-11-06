@@ -21,7 +21,7 @@ class ExpensePartnership(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_partnership = db.Column(db.Integer, db.ForeignKey('partnership.id'))
     partnership = db.relationship('Partnership', foreign_keys=[id_partnership], cascade="merge")
-    month = db.Column(db.String, nullable=False)
+    month = db.Column(db.Integer, nullable=False)
     year = db.Column(db.Integer, nullable=False)
     description = db.Column(db.String(500), nullable=True)
     since_date = db.Column(db.DateTime, nullable=False)

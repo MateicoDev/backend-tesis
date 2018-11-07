@@ -15,7 +15,7 @@ from datetime import datetime
 
 
 class ExpensesView(FlaskView):
-    route_base = '/expenses/'
+    route_base = '/expenses'
     spending_schema = SpendingSchema()
     spending_types_schema = SpendingTypeSchema()
     expenses_schema = ExpensePartnershipSchema()
@@ -27,7 +27,21 @@ class ExpensesView(FlaskView):
         params = request.args
         page = params.get('page', 1)
         per_page = params.get('per_page', 10)
-        idUser = params.get('id_user', None)
+        id_expense = params.get('id', None)
+        id_partnership = params.get('id_partnership', None)
+
+        expenses = ExpensePartnership.query
+        if not id_expense:
+            expenses = expenses.order_by(ExpensePartnership.id.asc()).paginate(int(page), int(per_page),
+                                                                               error_out=False)
+            expenses_data = self.pagination_expenses_schema.dump(expenses).data
+
+            return jsonify({'Expensas': expenses_data})
+        else:
+            expense = expenses.filter(ExpensePartnership.id == id_expense).first()
+            expense_data = self.expenses_schema.dump(expense).data
+
+            return jsonify({'Expensa': expense_data})
 
     def post(self):
         data = request.json
@@ -50,7 +64,7 @@ class ExpensesView(FlaskView):
             print(str(e))
             raise InternalServerError('Unavailable to create new Expense')
 
-        new_expense = ExpensePerProperty.query.order_by(ExpensePerProperty.id.desc()).first()
+        new_expense = ExpensePartnership.query.order_by(ExpensePartnership.id.desc()).first()
         expense_data = self.expenses_schema.dump(new_expense).data
 
         return jsonify({'Expense per partnership': expense_data})

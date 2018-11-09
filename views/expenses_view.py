@@ -19,8 +19,8 @@ class ExpensesView(FlaskView):
     spending_schema = SpendingSchema()
     spending_types_schema = SpendingTypeSchema()
     expenses_schema = ExpensePartnershipSchema()
-    pagination_spending_schema = PageOfSpendingTypeSchema()
-    pagination_spending_type_schema = PageOfSpendingSchema()
+    pagination_spending_schema = PageOfSpendingSchema()
+    pagination_spending_type_schema = PageOfSpendingTypeSchema()
     pagination_expenses_schema = PageOfExpensePartnershipSchema()
 
     def get(self):
@@ -68,3 +68,71 @@ class ExpensesView(FlaskView):
         expense_data = self.expenses_schema.dump(new_expense).data
 
         return jsonify({'Expense per partnership': expense_data})
+
+    @route('/spendings', methods=['POST'])
+    def post(self):
+
+        data = request.json
+        spending_obj = Spending()
+        spending_obj.date = datetime.now()
+        spending_obj.total_price = data.get('total_price', None)
+        spending_obj.id_expense = data.get('id_expense', None)
+        spending_obj.observation = data.get('observation', None)
+        spending_obj.since_date = data.get('id_type', None)
+
+        try:
+            db.session.add(spending_obj)
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unavailable to create new Spending')
+
+        new_spending = Spending.query.order_by(Spending.id.desc()).first()
+        spending_data = self.expenses_schema.dump(new_spending).data
+
+        return jsonify({'Spending': spending_data})
+
+    @route('/spendings/types', methods=['POST'])
+    def post(self):
+
+        data = request.json
+        spending_obj = SpendingType()
+        spending_obj.name = data.get('name', None)
+
+        try:
+            db.session.add(spending_obj)
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unavailable to create new Type of Spending')
+
+        new_type = SpendingType.query.order_by(SpendingType.id.desc()).first()
+        type_data = self.spending_types_schema.dump(new_type).data
+
+        return jsonify({'Type of Sepending': type_data})
+
+    @route('/spendings/types', methods=['GET'])
+    def get(self):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_type = params.get('id', None)
+        id_partnership = params.get('id_partnership', None)
+
+        type_spending = SpendingType.query
+        if not id_type:
+            type_spending = type_spending.order_by(SpendingType.id.asc()).paginate(int(page), int(per_page),
+                                                                               error_out=False)
+            type_spending_data = self.pagination_spending_type_schema.dump(type_spending).data
+
+            return jsonify({'Types of Spendings': type_spending_data})
+        else:
+            type_spending = type_spending.filter(SpendingType.id == id_type).first()
+            type_spending_data = self.spending_types_schema.dump(type_spending).data
+
+            return jsonify({'Type of Spendings': type_spending_data})
+

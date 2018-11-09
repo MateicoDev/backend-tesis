@@ -7,6 +7,7 @@ from populators.claim_initializer import ClaimInitializer
 from populators.users_initializer import UsersInitializer
 from populators.property_initializer import PropertyInitializer
 from populators.propertyPerUser_initializer import PropertyPerUserInitializer
+from populators.expenses_initialiazer import SpendingTypeInitializer
 import os
 
 application = create_app()
@@ -61,4 +62,5 @@ if __name__ == '__main__':
         PropertyInitializer().init_properties()
         PropertyPerUserInitializer().init_relation_propertyPerUser()
         PropertyPerUserInitializer().init_propertyPerUser()
+        SpendingTypeInitializer().init_types_of_spending()
         application.run(host=os.getenv("APP_HOST", "0.0.0.0"), port=os.getenv("PORT", 5000))

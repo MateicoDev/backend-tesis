@@ -70,7 +70,7 @@ class ExpensesView(FlaskView):
         return jsonify({'Expense per partnership': expense_data})
 
     @route('/spendings', methods=['POST'])
-    def post(self):
+    def post_spendings(self):
 
         data = request.json
         spending_obj = Spending()
@@ -94,8 +94,9 @@ class ExpensesView(FlaskView):
 
         return jsonify({'Spending': spending_data})
 
+    @route('/spendings/')
     @route('/spendings/types', methods=['POST'])
-    def post(self):
+    def post_spendings_types(self):
 
         data = request.json
         spending_obj = SpendingType()
@@ -116,7 +117,7 @@ class ExpensesView(FlaskView):
         return jsonify({'Type of Sepending': type_data})
 
     @route('/spendings/types', methods=['GET'])
-    def get(self):
+    def get_spendings_types(self):
         params = request.args
         page = params.get('page', 1)
         per_page = params.get('per_page', 10)

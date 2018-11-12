@@ -194,7 +194,7 @@ class SpendingSchema(Schema):
     id = fields.Integer()
     date = fields.DateTime()
     total_price = fields.Float()
-    id_expense = fields.Integer() #deberia ser Nested
+    id_partnership = fields.Integer() #deberia ser Nested
     observation = fields.String()
     id_type = fields.Integer() #deberia ser nested
 

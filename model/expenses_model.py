@@ -47,18 +47,18 @@ class Spending(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable = False)
     total_price = db.Column(db.Float, nullable = False)
-    id_expense = db.Column(db.Integer, db.ForeignKey('expense_partnership.id'))
-    expense = db.relationship('ExpensePartnership', foreign_keys=[id_expense], cascade="merge")
+    id_partnership = db.Column(db.Integer, db.ForeignKey('partnership.id'))
+    partnership = db.relationship('Partnership', foreign_keys=[id_partnership], cascade="merge")
     observation = db.Column(db.String, nullable=True)
     bill_picture = db.Column(db.String, nullable=True)
     id_type = db.Column(db.Integer, db.ForeignKey('spending_type.id'))
     type = db.relationship('SpendingType', foreign_keys=[id_type], cascade="merge")
 
-    def __init__(self, date=None, total_price=None, id_expense=None, observation=None,
+    def __init__(self, date=None, total_price=None, id_partnership=None, observation=None,
                  bill_picture=None, id_type=None):
         self.date = date
         self.total_price = total_price
-        self.id_expense = id_expense
+        self.id_partnership = id_partnership
         self.observation = observation
         self.bill_picture = bill_picture
         self.id_type = id_type

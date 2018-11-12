@@ -76,9 +76,9 @@ class ExpensesView(FlaskView):
         spending_obj = Spending()
         spending_obj.date = datetime.now()
         spending_obj.total_price = data.get('total_price', None)
-        spending_obj.id_expense = data.get('id_expense', None)
+        spending_obj.id_partnership = data.get('id_partnership', None)
         spending_obj.observation = data.get('observation', None)
-        spending_obj.since_date = data.get('id_type', None)
+        spending_obj.id_type = data.get('id_type', None)
 
         try:
             db.session.add(spending_obj)
@@ -90,11 +90,10 @@ class ExpensesView(FlaskView):
             raise InternalServerError('Unavailable to create new Spending')
 
         new_spending = Spending.query.order_by(Spending.id.desc()).first()
-        spending_data = self.expenses_schema.dump(new_spending).data
+        spending_data = self.spending_schema.dump(new_spending).data
 
         return jsonify({'Spending': spending_data})
 
-    @route('/spendings/')
     @route('/spendings/types', methods=['POST'])
     def post_spendings_types(self):
 

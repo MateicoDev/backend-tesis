@@ -47,7 +47,7 @@ class ExpensesView(FlaskView):
         data = request.json
         expenses_obj = ExpensePartnership()
         expenses_obj.id_partnership = data.get('id_partnership', None)
-        expenses_obj.total_cost = data.get('total_cost', None)
+        expenses_obj.total_month = data.get('total_month', None)
         expenses_obj.month = datetime.now().month
         expenses_obj.year = datetime.now().year
         expenses_obj.description = data.get('description', None)

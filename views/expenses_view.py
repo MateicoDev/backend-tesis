@@ -11,7 +11,7 @@ from schemas import StatusExpensePaySchema
 from schemas import PageOfStatusExpensePaySchema
 import datetime
 
-from model import SpendingType, Spending, ExpensePerProperty, ExpensePartnership, StatusExpensePay
+from model import SpendingType, Spending, ExpensePerProperty, ExpensePartnership, StatusExpensePay, Property, PropertyPerUser
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
@@ -51,12 +51,13 @@ class ExpensesView(FlaskView):
     def post(self):
         data = request.json
         expenses_obj = ExpensePartnership()
-        expenses_obj.id_partnership = data.get('id_partnership', None)
+        id_partnership = data.get('id_partnership', None)
+        expenses_obj.id_partnership = id_partnership
         expenses_obj.month = datetime.now().month
         expenses_obj.year = datetime.now().year
         expenses_obj.description = data.get('description', None)
-        expenses_obj.since_date = '2018-11-12T23:31:09.243904+00:00'
-        expenses_obj.until_date = '2018-11-12T23:31:09.243904+00:00'
+        expenses_obj.since_date = '2018-11-01T00:00:09.243904+00:00'
+        expenses_obj.until_date = '2018-11-30T23:59:00.243904+00:00'
         expenses_obj.generated_date = datetime.now()
 
         spending = Spending.query
@@ -77,7 +78,37 @@ class ExpensesView(FlaskView):
             print(str(e))
             raise InternalServerError('Unavailable to create new Expense')
 
+        status_emitida = StatusExpensePay.query.filter(StatusExpensePay.name == "Emitida").first()
+
+        properties = Property.query.filter(Property.id_partnership == id_partnership).all()
+
+        expense_per_property = total_cost / len(properties)
+
         new_expense = ExpensePartnership.query.order_by(ExpensePartnership.id.desc()).first()
+
+        for propertie in properties:
+            relations = PropertyPerUser.query.filter(PropertyPerUser.id_property == propertie.id).all()
+            for relation in relations:
+                properti_data = ExpensePerProperty()
+                properti_data.id_expense = new_expense.id
+                properti_data.total_cost = expense_per_property
+                properti_data.date_issue = new_expense.since_date
+                properti_data.date_expiry = new_expense.until_date
+                properti_data.id_status = status_emitida.id
+                properti_data.id_prop_per_user = relation.id
+
+                try:
+                    db.session.add(properti_data)
+                    db.session.commit()
+
+                except Exception as e:
+                    db.session.rollback()
+                    print(str(e))
+                    raise InternalServerError('Unavailable to create new ExpensePerProperty')
+
+        new_expense = ExpensePartnership.query.order_by(ExpensePartnership.id.desc()).first()
+        expense_data = self.expenses_schema.dump(new_expense).data
+
         expense_data = self.expenses_schema.dump(new_expense).data
 
         return jsonify({'Expense per partnership': expense_data})

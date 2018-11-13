@@ -1,6 +1,6 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
-from sqlalchemy import extract
+from sqlalchemy import extract, and_
 from schemas import SpendingSchema
 from schemas import SpendingTypeSchema
 from schemas import PageOfSpendingTypeSchema
@@ -9,6 +9,8 @@ from schemas import PageOfExpensePartnershipSchema
 from schemas import ExpensePartnershipSchema
 from schemas import StatusExpensePaySchema
 from schemas import PageOfStatusExpensePaySchema
+from schemas import PageOfExpensePerPropertySchema
+from schemas import ExpensePerPropertySchema
 import datetime
 
 from model import SpendingType, Spending, ExpensePerProperty, ExpensePartnership, StatusExpensePay, Property, PropertyPerUser
@@ -23,10 +25,34 @@ class ExpensesView(FlaskView):
     spending_types_schema = SpendingTypeSchema()
     expenses_schema = ExpensePartnershipSchema()
     expense_status_schema = StatusExpensePaySchema()
+    expenses_per_property_schema = ExpensePerPropertySchema()
     pagination_spending_schema = PageOfSpendingSchema()
     pagination_spending_type_schema = PageOfSpendingTypeSchema()
     pagination_expenses_schema = PageOfExpensePartnershipSchema()
     pagination_expenses_status = PageOfStatusExpensePaySchema()
+    pagination_expenses_per_property = PageOfExpensePerPropertySchema()
+
+    @route('/property/<id_expense>', methods=['GET'])
+    def get_expense_per_property(self, id_expense):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_prop_per_user = params.get('id_prop_per_user', None)
+
+        expenses_property = ExpensePerProperty.query
+        if not id_prop_per_user:
+            expenses = expenses_property.filter(ExpensePerProperty.id_expense == id_expense).order_by(ExpensePerProperty.id.asc()).paginate(int(page), int(per_page),
+                                                                               error_out=False)
+            expenses_data = self.pagination_expenses_per_property.dump(expenses).data
+
+            return jsonify({'Expense per propertys': expenses_data})
+        else:
+            expense = expenses_property.filter(and_(ExpensePerProperty.id_expense == id_expense, ExpensePerProperty.id_prop_per_user == id_prop_per_user)).first()
+            expense_data = self.expenses_per_property_schema.dump(expense).data
+
+            return jsonify({'Expense per property': expense_data})
+
+
 
     def get(self):
         params = request.args

@@ -26,8 +26,10 @@ from schemas import PageOfPartnershipAdministratorSchema
 from schemas import SpendingTypeSchema
 from schemas import SpendingSchema
 from schemas import ExpensePartnershipSchema
+from schemas import ExpensePerPropertySchema
 from schemas import PageOfSpendingSchema
 from schemas import PageOfSpendingTypeSchema
 from schemas import PageOfExpensePartnershipSchema
+from schemas import PageOfExpensePerPropertySchema
 from schemas import StatusExpensePaySchema
 from schemas import PageOfStatusExpensePaySchema

@@ -29,3 +29,5 @@ from schemas import ExpensePartnershipSchema
 from schemas import PageOfSpendingSchema
 from schemas import PageOfSpendingTypeSchema
 from schemas import PageOfExpensePartnershipSchema
+from schemas import StatusExpensePaySchema
+from schemas import PageOfStatusExpensePaySchema

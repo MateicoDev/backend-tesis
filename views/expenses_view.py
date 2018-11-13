@@ -1,14 +1,17 @@
 from flask_classy import FlaskView, route
 from flask import jsonify, request
-
+from sqlalchemy import extract
 from schemas import SpendingSchema
 from schemas import SpendingTypeSchema
 from schemas import PageOfSpendingTypeSchema
 from schemas import PageOfSpendingSchema
 from schemas import PageOfExpensePartnershipSchema
 from schemas import ExpensePartnershipSchema
+from schemas import StatusExpensePaySchema
+from schemas import PageOfStatusExpensePaySchema
+import datetime
 
-from model import SpendingType, Spending, ExpensePerProperty, ExpensePartnership
+from model import SpendingType, Spending, ExpensePerProperty, ExpensePartnership, StatusExpensePay
 from database import db
 from werkzeug.exceptions import InternalServerError, Forbidden, BadRequest
 from datetime import datetime
@@ -19,9 +22,11 @@ class ExpensesView(FlaskView):
     spending_schema = SpendingSchema()
     spending_types_schema = SpendingTypeSchema()
     expenses_schema = ExpensePartnershipSchema()
+    expense_status_schema = StatusExpensePaySchema()
     pagination_spending_schema = PageOfSpendingSchema()
     pagination_spending_type_schema = PageOfSpendingTypeSchema()
     pagination_expenses_schema = PageOfExpensePartnershipSchema()
+    pagination_expenses_status = PageOfStatusExpensePaySchema()
 
     def get(self):
         params = request.args
@@ -47,14 +52,22 @@ class ExpensesView(FlaskView):
         data = request.json
         expenses_obj = ExpensePartnership()
         expenses_obj.id_partnership = data.get('id_partnership', None)
-        expenses_obj.total_month = data.get('total_month', None)
         expenses_obj.month = datetime.now().month
         expenses_obj.year = datetime.now().year
         expenses_obj.description = data.get('description', None)
-        expenses_obj.since_date = data.get('since_date', None)
-        expenses_obj.until_date = data.get('until_date', None)
+        expenses_obj.since_date = '2018-11-12T23:31:09.243904+00:00'
+        expenses_obj.until_date = '2018-11-12T23:31:09.243904+00:00'
         expenses_obj.generated_date = datetime.now()
 
+        spending = Spending.query
+        total_cost = 0
+        spendings = spending.order_by(Spending.date.desc()).all()
+
+        for spending in spendings:
+            if spending.date.month == expenses_obj.month:
+                total_cost = total_cost + spending.total_price
+
+        expenses_obj.total_month = total_cost
         try:
             db.session.add(expenses_obj)
             db.session.commit()
@@ -74,7 +87,9 @@ class ExpensesView(FlaskView):
 
         data = request.json
         spending_obj = Spending()
-        spending_obj.date = datetime.now()
+        spending_obj.date = data.get('date', None)
+        if not spending_obj.date:
+            spending_obj.date = datetime.now()
         spending_obj.total_price = data.get('total_price', None)
         spending_obj.id_partnership = data.get('id_partnership', None)
         spending_obj.observation = data.get('observation', None)
@@ -93,6 +108,27 @@ class ExpensesView(FlaskView):
         spending_data = self.spending_schema.dump(new_spending).data
 
         return jsonify({'Spending': spending_data})
+
+    @route('/spendings', methods=['GET'])
+    def get_spendings(self):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_spending = params.get('id', None)
+        id_partnership = params.get('id_partnership', None)
+
+        spending = Spending.query
+        if not id_spending:
+            spendings = spending.order_by(Spending.id.asc()).paginate(int(page), int(per_page),
+                                                                               error_out=False)
+            spendings_data = self.pagination_spending_schema.dump(spendings).data
+
+            return jsonify({'Spendings': spendings_data})
+        else:
+            spendings = spending.filter(Spending.id == id_spending).first()
+            spending_data = self.spending_schema.dump(spendings).data
+
+            return jsonify({'Spending': spending_data})
 
     @route('/spendings/types', methods=['POST'])
     def post_spendings_types(self):
@@ -136,3 +172,47 @@ class ExpensesView(FlaskView):
 
             return jsonify({'Type of Spendings': type_spending_data})
 
+    @route('/status', methods=['POST'])
+    def post_spendings_types(self):
+
+        data = request.json
+        expense_status_obj = StatusExpensePay()
+        expense_status_obj.name = data.get('name', None)
+
+        try:
+            db.session.add(expense_status_obj)
+            db.session.commit()
+
+        except Exception as e:
+            db.session.rollback()
+            print(str(e))
+            raise InternalServerError('Unavailable to create new Type of Spending')
+
+        new_status = StatusExpensePay.query.order_by(StatusExpensePay.id.desc()).first()
+        status_data = self.expense_status_schema.dump(new_status).data
+
+        return jsonify({'Status of Pay Expenses': status_data})
+
+    @route('/status', methods=['GET'])
+    def get_spendings_types(self):
+        params = request.args
+        page = params.get('page', 1)
+        per_page = params.get('per_page', 10)
+        id_expense_status = params.get('id', None)
+        id_partnership = params.get('id_partnership', None)
+
+        expense_status = StatusExpensePay.query
+        if not id_expense_status:
+            expense_status = expense_status.order_by(StatusExpensePay.id.asc()).paginate(int(page), int(per_page),
+                                                                                   error_out=False)
+            expense_status_data = self.pagination_expenses_status.dump(expense_status).data
+
+            return jsonify({'Status of Pay Expenses': expense_status_data})
+        else:
+            expense_status = expense_status.filter(StatusExpensePay.id == id_expense_status).first()
+            expense_statu_data = self.spending_types_schema.dump(expense_status).data
+
+            return jsonify({'Statu of Pay Expenses': expense_statu_data})
+    #
+    # def post_expenses_properties(self):
+    #     return

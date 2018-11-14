@@ -171,19 +171,28 @@ class ExpensesView(FlaskView):
         params = request.args
         page = params.get('page', 1)
         per_page = params.get('per_page', 10)
-        id_spending = params.get('id', None)
+        #id_spending = params.get('id', None)
         id_partnership = params.get('id_partnership', None)
+        month = params.get('month', None)
+        year = params.get('year', None)
+
+        #fecha = Spending.query.with_entities(Spending.date).filter(Spending.id_partnership == id_partnership).first()
+        #fecha = extract('month', fecha)
+
 
         spending = Spending.query
-        if not id_spending:
+        if not id_partnership and not month and not year:
             spendings = spending.order_by(Spending.id.asc()).paginate(int(page), int(per_page),
                                                                                error_out=False)
             spendings_data = self.pagination_spending_schema.dump(spendings).data
 
             return jsonify({'Spendings': spendings_data})
         else:
-            spendings = spending.filter(Spending.id == id_spending).first()
-            spending_data = self.spending_schema.dump(spendings).data
+            spendings = spending.filter(Spending.id_partnership == id_partnership and
+                                        extract('month', Spending.date) == month and
+                                        extract('year', Spending.date) == year).paginate(int(page), int(per_page),
+                                                                                         error_out=False)
+            spending_data = self.pagination_spending_schema.dump(spendings).data
 
             return jsonify({'Spending': spending_data})
 
